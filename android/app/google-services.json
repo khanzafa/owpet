@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "814449029472",
+    "project_id": "owpet-app",
+    "storage_bucket": "owpet-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814449029472:android:98a8aaecee17bb959d6e05",
+        "android_client_info": {
+          "package_name": "com.example.owpet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTekf3tfFl_ZCwpoTevX8Zs294a1k_hSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
