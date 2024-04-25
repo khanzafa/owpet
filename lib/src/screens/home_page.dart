@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:owpet/src/screens/my_pets_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
-    Text('Search Page'),
+    MyPetsScreen(userId: 'qUtR4Sp5FAHyOpmxeD9l'),
     Text('Profile Page'),
   ];
 
@@ -24,7 +25,31 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bottom Navigation Bar Example'),
+        title: Text('Owpets'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Tips'),
+                    content: Text('This is a simple app to manage your pets.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -36,8 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.pets),
+            label: 'My Pets',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
