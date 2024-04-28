@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:owpet/src/screens/my_pets_screen.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomeScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomeScreenState createState() => _MyHomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomeScreenState extends State<MyHomeScreen> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    Text('Home Page'),
+    Text('Home Screen'),
     MyPetsScreen(userId: 'qUtR4Sp5FAHyOpmxeD9l'),
-    Text('Profile Page'),
+    Text('Profile Screen'),
   ];
 
   void _onItemTapped(int index) {

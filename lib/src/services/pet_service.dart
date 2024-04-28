@@ -9,14 +9,21 @@ class PetService {
     List<Pet> myPets = [];
 
     try {
-      QuerySnapshot snapshot = await _firestore.collection('users').doc(userId).collection('pets').get();
+      QuerySnapshot snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('pets')
+          .get();
 
       snapshot.docs.forEach((doc) {
         myPets.add(Pet(
           id: doc.id,
           name: doc['name'],
           species: doc['species'],
-          age: doc['age'],
+          birthday: doc['birthday'],
+          gender: doc['gender'],
+          status: doc['status'],
+          description: doc['description'], 
         ));
       });
     } catch (e) {
@@ -24,5 +31,21 @@ class PetService {
     }
 
     return myPets;
+  }
+
+  // add new pet
+  Future addPet(String userId, Pet pet) async {
+    try {
+      await _firestore.collection('users').doc(userId).collection('pets').add({
+        'name': pet.name,
+        'species': pet.species,
+        'birthday': pet.birthday,
+        'gender': pet.gender,
+        'status': pet.status,
+        'description': pet.description,
+      });
+    } catch (e) {
+      print('Error adding pet: $e');
+    }
   }
 }
