@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
 import 'package:owpet/src/screens/meal_monitoring_screen.dart';
 import '../models/pet.dart';
 
@@ -31,6 +32,23 @@ class PetDetailScreen extends StatelessWidget {
             if (pet.description != null) // Tampilkan deskripsi hanya jika ada
               Text('Description: ${pet.description}'),
             SizedBox(height: 16),
+            Card(
+              child: ListTile(
+                title: Text('Grooming Monitoring'),
+                subtitle: Text('Monitor your pet\'s grooming schedule'),
+                onTap: () {
+                  // Navigasi ke halaman monitoring perawatan
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GroomingMonitoringScreen(
+                        petId: pet.id,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
             // Card untuk ke halaman monitoring makan
             Card(
               child: ListTile(
@@ -38,11 +56,13 @@ class PetDetailScreen extends StatelessWidget {
                 subtitle: Text('Monitor your pet\'s feeding schedule'),
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MealMonitoringScreen(petId: pet.id,),
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MealMonitoringScreen(
+                        petId: pet.id,
                       ),
-                    );
+                    ),
+                  );
                 },
               ),
             ),
@@ -57,15 +77,6 @@ class PetDetailScreen extends StatelessWidget {
               ),
             ),
             // Card untuk ke halaman monitoring perawatan
-            Card(
-              child: ListTile(
-                title: Text('Grooming Monitoring'),
-                subtitle: Text('Monitor your pet\'s grooming schedule'),
-                onTap: () {
-                  // Navigasi ke halaman monitoring perawatan
-                },
-              ),
-            )
           ],
         ),
       ),
