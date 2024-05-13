@@ -23,7 +23,7 @@ class PetService {
           birthday: doc['birthday'],
           gender: doc['gender'],
           status: doc['status'],
-          description: doc['description'], 
+          description: doc['description'],
         ));
       });
     } catch (e) {
@@ -46,6 +46,27 @@ class PetService {
       });
     } catch (e) {
       print('Error adding pet: $e');
+    }
+  }
+
+  // update pet
+  Future updatePet(String userId, Pet pet) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('pets')
+          .doc(pet.id)
+          .update({
+        'name': pet.name,
+        'species': pet.species,
+        'birthday': pet.birthday,
+        'gender': pet.gender,
+        'status': pet.status,
+        'description': pet.description,
+      });
+    } catch (e) {
+      print('Error updating pet: $e');
     }
   }
 }
