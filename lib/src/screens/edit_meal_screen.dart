@@ -1,106 +1,132 @@
 import 'package:flutter/material.dart';
 import 'package:owpet/src/services/meal_service.dart';
 
-class EditMealScreen extends StatefulWidget {
-  final String petId;
-
-  const EditMealScreen({Key? key, required this.petId}) : super(key: key);
-
+class AddEditMealSchedulePage extends StatefulWidget {
   @override
-  _EditMealScreenState createState() => _EditMealScreenState();
+  _AddEditMealSchedulePageState createState() =>
+      _AddEditMealSchedulePageState();
 }
 
-class _EditMealScreenState extends State<EditMealScreen> {
-  List<String> _tasks = [];
-  // Controller untuk field input task baru
-  final TextEditingController _taskController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTasks();
-  }
-
-  // Fungsi untuk menambahkan tugas
-  Future<void> _addTask(String task) async {
-    try {
-      // Tambahkan tugas baru ke Firestore
-      await MealProgressService().addTask(widget.petId, task);
-      // Bersihkan field input setelah tugas berhasil ditambahkan
-      _taskController.clear();
-      _loadTasks();
-    } catch (e) {
-      print('Error adding task: $e');
-      // Tampilkan pesan kesalahan jika ada
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to add task. Please try again.'),
-      ));
-    }
-  }
-
-  Future<void> _loadTasks() async {
-    try {
-      print('Loading tasks...');
-      List<String> tasks = await MealProgressService().getTasks(widget.petId);
-      setState(() {
-        _tasks = tasks;
-      });
-      print(_tasks);
-    } catch (e) {
-      print('Error loading tasks: $e');
-      // Atau lakukan penanganan kesalahan yang sesuai
-    }
-  }
-
+class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
+  TextEditingController _mealTypeController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  TextEditingController _intervalDaysController = TextEditingController();
+  TextEditingController _timeController = TextEditingController(); 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Task'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
+      appBar: AppBar(title: Text('Add Meal Schedule')),
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _taskController,
-              decoration: InputDecoration(
-                hintText: 'Enter task name',
-              ),
-            ),
-            SizedBox(height: 16.0),
+            Text('Add Meal Schedule Form'),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Panggil fungsi untuk menambahkan tugas ketika tombol ditekan
-                _addTask(_taskController.text.trim());
+                _showAddMealScheduleDialog(context);
               },
-              child: Text('Add Task'),
+              child: Text('Add Meal Schedule'),
             ),
-            SizedBox(height: 16.0),
-            // Tampilkan daftar tugas yang sudah ada
-            if (_tasks.isNotEmpty)
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _tasks.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_tasks[index]),
-                  );
-                },
-              ),
-            
           ],
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    // Pastikan untuk membersihkan controller ketika widget dihapus
-    _taskController.dispose();
-    super.dispose();
+  void _showAddMealScheduleDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Meal Schedule'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _mealTypeController,
+                  decoration: InputDecoration(labelText: 'Meal Type'),
+                ),
+                TextFormField(
+                  controller: _weightController,
+                  decoration: InputDecoration(labelText: 'Weight'),
+                  keyboardType: TextInputType.number,
+                ),
+                InkWell(
+                  onTap: () {
+                    _selectTime(context);
+                  },
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Time',
+                    ),
+                    child: Text(
+                      _selectedTime.format(context),
+                    ),
+                  ),
+                ),
+                TextFormField(
+                  controller: _intervalDaysController,
+                  decoration: InputDecoration(labelText: 'Interval Days'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Process the form data here
+                _addMealSchedule();
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+    if (pickedTime != null && pickedTime != _selectedTime) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
+
+  void _addMealSchedule() {
+    // Implement the logic to add the meal schedule to Firestore here
+    String mealType = _mealTypeController.text;
+    double weight = double.parse(_weightController.text);
+    String time = _selectedTime.format(context); // Convert TimeOfDay to string
+    int intervalDays = int.parse(_intervalDaysController.text);
+
+    // Print the values for demonstration (replace with Firestore logic)
+    print('Meal Type: $mealType');
+    print('Weight: $weight');
+    print('Time: $time');
+    print('Interval Days: $intervalDays');
+
+    MealScheduleService().addMealSchedule(
+      petId: 'petId',
+      mealType: mealType,
+      weight: weight,
+      time: _selectedTime,
+      intervalDays: intervalDays,
+    );
   }
 }

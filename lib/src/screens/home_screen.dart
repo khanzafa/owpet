@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:owpet/src/screens/my_pets_screen.dart';
+import 'package:owpet/src/screens/profile_user_screen.dart';
+import 'package:owpet/src/screens/dashboard_screen.dart';
 
 class MyHomeScreen extends StatefulWidget {
   @override
@@ -10,9 +12,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    Text('Home Screen'),
+    DashboardScreen(),
     MyPetsScreen(userId: 'qUtR4Sp5FAHyOpmxeD9l'),
-    Text('Profile Screen'),
+    ProfileUserScreen(),
   ];
 
   void _onItemTapped(int index) {
