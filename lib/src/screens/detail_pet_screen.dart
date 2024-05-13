@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/edit_pet_screen.dart';
+import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
 import 'package:owpet/src/screens/meal_monitoring_screen.dart';
 import '../models/pet.dart';
 
@@ -225,15 +226,22 @@ class PetDetailScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Navigasi ke halaman monitoring perawatan
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  GroomingMonitoringScreen(petId: pet.id),
+                            ),
+                          );
                         },
-                        child: Image(
+                        child: const Image(
                           image: AssetImage(
                               'assets/images/perawatan_card-day-care.png'),
                           width: 100,
                           height: 100,
                         ),
                       ),
-                      SizedBox(width: 14.0), // Spacing between cards
+                      const SizedBox(width: 14.0), // Spacing between cards
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -244,19 +252,19 @@ class PetDetailScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Image(
+                        child: const Image(
                           image: AssetImage(
                               'assets/images/makan_card-day-care.png'),
                           width: 100,
                           height: 100,
                         ),
                       ),
-                      SizedBox(width: 14.0), // Spacing between cards
+                      const SizedBox(width: 14.0), // Spacing between cards
                       GestureDetector(
                         onTap: () {
                           // Navigasi ke halaman monitoring kesehatan
                         },
-                        child: Image(
+                        child: const Image(
                           image: AssetImage(
                               'assets/images/kesehatan_card-day-care.png'),
                           width: 100,

@@ -11,12 +11,24 @@ class MonitoringItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Checkbox(
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+        ),),
+      trailing: Checkbox(
+        side: const BorderSide(
+          width: 9,
+          color: Color.fromRGBO(139, 128, 255, 1.0),
+        ),
+        fillColor: const MaterialStatePropertyAll(
+          Color.fromRGBO(139, 128, 255, 1.0),
+        ),
+        checkColor: Colors.black,
         value: isChecked,
         onChanged:
             isChecked ? null : (bool? value) => onChanged(value ?? false),
       ),
-      title: Text(title),
     );
   }
 }
