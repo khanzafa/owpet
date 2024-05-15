@@ -15,6 +15,7 @@ class EditPetScreen extends StatefulWidget {
 
 class _EditPetScreenState extends State<EditPetScreen> {
   final PetService petService = PetService();
+  final TextEditingController profileController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController statusController = TextEditingController();
@@ -72,7 +73,8 @@ class _EditPetScreenState extends State<EditPetScreen> {
               ElevatedButton(
                 onPressed: () {
                   Pet updatedPet = Pet(
-                    id: widget.pet.id, // Use existing ID from the passed pet
+                    id: widget.pet.id,
+                    profile: profileController.text, // Use existing ID from the passed pet
                     name: nameController.text,
                     gender: genderController.text,
                     status: statusController.text,

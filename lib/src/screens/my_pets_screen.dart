@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:owpet/src/screens/add_pet_screen.dart';
+import 'package:owpet/src/screens/add_profile.dart';
 import 'package:owpet/src/screens/detail_pet_screen.dart';
 import '../models/pet.dart';
 import '../services/pet_service.dart';
@@ -14,7 +14,7 @@ class MyPetsScreen extends StatelessWidget {
   void _navigateToAddPetScreen(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPetScreen()),
+      MaterialPageRoute(builder: (context) => AddProfile()),
     );
   }
 
