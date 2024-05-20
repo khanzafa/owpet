@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -25,83 +24,99 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 60),
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 0),
-                    padding: EdgeInsets.only(top: 15, bottom: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(139, 128, 255, 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            icon: Icon(Icons.edit_square, color: Colors.orange, size: 24),
-                            onPressed: () => _editProfile(context),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 60),
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 0),
+                      padding: EdgeInsets.only(
+                          top: 15, bottom: 20, left: 20, right: 20),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(139, 128, 255, 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: Icon(Icons.edit_square,
+                                  color: Colors.orange, size: 24),
+                              onPressed: () => _editProfile(context),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: const Color.fromARGB(255, 255, 255, 255))),
-                        Text(tagline, style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 255, 255, 255)), textAlign: TextAlign.center,),
-                      ],
+                          SizedBox(height: 10),
+                          Text(name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                  color: const Color.fromARGB(
+                                      255, 255, 255, 255))),
+                          Text(
+                            tagline,
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: -50,
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _imageFile == null ? AssetImage('assets/profile_pic.jpg') : FileImage(File(_imageFile!.path)) as ImageProvider,
+                    Positioned(
+                      top: -50,
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _imageFile == null
+                            ? AssetImage('assets/profile_pic.jpg')
+                            : FileImage(File(_imageFile!.path))
+                                as ImageProvider,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              DetailTile(label: 'Email', icon: Icons.email, text: email),
-              DetailTile(label: 'Nomor HP', icon: Icons.phone, text: phoneNumber),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 70, vertical: 20),
-                child: ElevatedButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Logout'),
-                      content: Text('Apakah Anda yakin ingin logout?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('Tidak'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Ya'),
-                        ),
-                      ],
+                  ],
+                ),
+                SizedBox(height: 30),
+                DetailTile(label: 'Email', icon: Icons.email, text: email),
+                DetailTile(
+                    label: 'Nomor HP', icon: Icons.phone, text: phoneNumber),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Logout'),
+                        content: Text('Apakah Anda yakin ingin logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('Tidak'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Ya'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Text('Logout'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                    child: Text('Logout'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-        ),
-        
       ),
     );
   }
@@ -119,7 +134,9 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: _imageFile == null ? AssetImage('assets/profile_pic.jpg') : FileImage(File(_imageFile!.path)) as ImageProvider,
+                    backgroundImage: _imageFile == null
+                        ? AssetImage('assets/profile_pic.jpg')
+                        : FileImage(File(_imageFile!.path)) as ImageProvider,
                     child: Icon(Icons.camera_alt, color: Colors.white70),
                   ),
                 ),
@@ -165,7 +182,8 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
   }
 
   void _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _imageFile = pickedFile;
@@ -179,7 +197,9 @@ class DetailTile extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const DetailTile({Key? key, required this.label, required this.icon, required this.text}) : super(key: key);
+  const DetailTile(
+      {Key? key, required this.label, required this.icon, required this.text})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
