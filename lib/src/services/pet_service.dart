@@ -18,6 +18,7 @@ class PetService {
       snapshot.docs.forEach((doc) {
         myPets.add(Pet(
           id: doc.id,
+          profile: doc['profile'],
           name: doc['name'],
           species: doc['species'],
           birthday: doc['birthday'],
@@ -38,6 +39,7 @@ class PetService {
     try {
       await _firestore.collection('users').doc(userId).collection('pets').add({
         'name': pet.name,
+        'profile' : pet.profile,
         'species': pet.species,
         'birthday': pet.birthday,
         'gender': pet.gender,
@@ -59,6 +61,7 @@ class PetService {
           .doc(pet.id)
           .update({
         'name': pet.name,
+        'profile': pet.profile,
         'species': pet.species,
         'birthday': pet.birthday,
         'gender': pet.gender,

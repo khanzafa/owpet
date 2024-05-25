@@ -17,7 +17,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   google_fonts: ^6.2.1
+  image_picker: ^1.1.1
   sqflite: ^2.3.3
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
