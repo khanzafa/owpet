@@ -7,7 +7,6 @@
 
 class Pet {
   final String id;
-  final String profile;
   final String name;
   final String birthday;
   final String gender;
@@ -17,7 +16,6 @@ class Pet {
 
   Pet(
       {required this.id,
-      required this.profile,
       required this.name,
       required this.birthday,
       required this.gender,

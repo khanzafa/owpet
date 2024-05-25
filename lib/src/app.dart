@@ -87,7 +87,7 @@ class MyApp extends StatelessWidget {
           routes: {            
             // '/': (context) => MyHomeScreen(),
 
-            // ROUTES FOR TESTING ONLY
+            // ROUTES FOR TESTING ONLY (KALIAN KALAU MAU SLICING GANTI INI SAMA SCREEN KALIAN)
             '/': (context) => MealMonitoringScreen(petId: '2jwHq8GSHHxTgZ5orTeT'),
           },
         );

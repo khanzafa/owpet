@@ -74,7 +74,6 @@ class _EditPetScreenState extends State<EditPetScreen> {
                 onPressed: () {
                   Pet updatedPet = Pet(
                     id: widget.pet.id,
-                    profile: profileController.text, // Use existing ID from the passed pet
                     name: nameController.text,
                     gender: genderController.text,
                     status: statusController.text,

@@ -375,7 +375,6 @@ class _AddProfileState extends State<AddProfile> {
 
                         Pet pet = Pet(
                           id: '',
-                          profile: _profile!,
                           name: _nameController.text,
                           gender: _gender!,
                           status: _status!,
