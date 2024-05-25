@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:owpet/src/services/meal_service.dart';
 
 class AddEditMealSchedulePage extends StatefulWidget {
+  final String petId;
+
+  AddEditMealSchedulePage({required this.petId});
+
   @override
   _AddEditMealSchedulePageState createState() =>
       _AddEditMealSchedulePageState();
@@ -11,8 +16,8 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
   TextEditingController _mealTypeController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
   TimeOfDay _selectedTime = TimeOfDay.now();
-  TextEditingController _intervalDaysController = TextEditingController();
-  TextEditingController _timeController = TextEditingController(); 
+  TextEditingController _timeController = TextEditingController();
+  String? _selectedMealType;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +35,40 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
               },
               child: Text('Add Meal Schedule'),
             ),
+            SizedBox(height: 20),
+            Expanded(
+              child: StreamBuilder<List<DocumentSnapshot>>(
+                stream: MealService().getMealSchedules(widget.petId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  final meals = snapshot.data ?? [];
+
+                  if (meals.isEmpty) {
+                    return Text('No meal schedules found.');
+                  }
+
+                  return ListView.builder(
+                    itemCount: meals.length,
+                    itemBuilder: (context, index) {
+                      final meal = meals[index].data() as Map<String, dynamic>;
+                      return ListTile(
+                        title: Text(meal['mealType']),
+                        subtitle: Text(
+                          'Weight: ${meal['weight']}g, Time: ${meal['time']}',
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -45,10 +84,38 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
           content: SingleChildScrollView(
             child: Column(
               children: [
-                TextFormField(
-                  controller: _mealTypeController,
-                  decoration: InputDecoration(labelText: 'Meal Type'),
-                ),
+                DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Meal Type'),
+                value: _selectedMealType,
+                items: [
+                  DropdownMenuItem(
+                    value: 'Dry Food',
+                    child: Text('Dry Food'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Wet Food',
+                    child: Text('Wet Food'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Snack',
+                    child: Text('Snack'),
+                  ),
+                ],
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedMealType = newValue;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a meal type';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _selectedMealType = value;
+                },
+              ),
                 TextFormField(
                   controller: _weightController,
                   decoration: InputDecoration(labelText: 'Weight'),
@@ -66,12 +133,7 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
                       _selectedTime.format(context),
                     ),
                   ),
-                ),
-                TextFormField(
-                  controller: _intervalDaysController,
-                  decoration: InputDecoration(labelText: 'Interval Days'),
-                  keyboardType: TextInputType.number,
-                ),
+                ),                
               ],
             ),
           ),
@@ -84,7 +146,6 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
             ),
             TextButton(
               onPressed: () {
-                // Process the form data here
                 _addMealSchedule();
                 Navigator.of(context).pop();
               },
@@ -109,24 +170,15 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
   }
 
   void _addMealSchedule() {
-    // Implement the logic to add the meal schedule to Firestore here
-    String mealType = _mealTypeController.text;
+    String mealType = _selectedMealType!;
     double weight = double.parse(_weightController.text);
-    String time = _selectedTime.format(context); // Convert TimeOfDay to string
-    int intervalDays = int.parse(_intervalDaysController.text);
+    String time = _selectedTime.format(context);
 
-    // Print the values for demonstration (replace with Firestore logic)
-    print('Meal Type: $mealType');
-    print('Weight: $weight');
-    print('Time: $time');
-    print('Interval Days: $intervalDays');
-
-    MealScheduleService().addMealSchedule(
-      petId: 'petId',
+    MealService().addMealSchedule(
+      petId: widget.petId,
       mealType: mealType,
       weight: weight,
       time: _selectedTime,
-      intervalDays: intervalDays,
     );
   }
 }

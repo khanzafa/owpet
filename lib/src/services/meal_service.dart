@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class MealScheduleService {
+class MealService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addMealSchedule({
@@ -9,58 +9,105 @@ class MealScheduleService {
     required String mealType,
     required double weight,
     required TimeOfDay time,
-    required int intervalDays,  
   }) async {
     try {
-      await _firestore.collection('meal_schedules').doc(petId).collection('schedules').add({
+      await _firestore
+          .collection('meal_schedule')
+          .doc(petId)
+          .collection('schedules')
+          .add({
         'mealType': mealType,
         'weight': weight,
-        'time': {"hour": time.hour, "minute": time.minute},
-        'intervalDays': intervalDays,
+        'time': '${time.hour}:${time.minute}',
       });
     } catch (e) {
       print('Error adding meal schedule: $e');
       throw e;
     }
   }
-  
-   Future<void> updateMealStatus(String petId, String scheduleId, bool? status) async {
-    try {
-      // Dapatkan referensi dokumen untuk jadwal makan yang ingin diperbarui
-      DocumentReference scheduleRef = _firestore.collection('meal_schedules').doc(petId).collection('schedules').doc(scheduleId);
 
-      // Perbarui status makan dalam dokumen
-      await scheduleRef.update({
-        'status': status,
-        'lastUpdated': DateTime.now(), // Tambahkan waktu terakhir diperbarui
-      });
-    } catch (e) {
-      print('Error updating meal status: $e');
-      throw e; // Atau lakukan penanganan kesalahan yang sesuai
-    }
+  Stream<List<DocumentSnapshot>> getMealSchedules(String petId) {
+    return _firestore
+        .collection('meal_schedule')
+        .doc(petId)
+        .collection('schedules')
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
-  Future<void> addSelfAssessment({
-    required String petId,
-    required DateTime date,
-    required List<bool> assessment,
-  }) async {
+  Stream<DocumentSnapshot> getMealSchedule(String petId, String scheduleId) {
+    return _firestore
+        .collection('meal_schedule')
+        .doc(petId)
+        .collection('schedules')
+        .doc(scheduleId)
+        .snapshots();
+  }
+
+  Stream<List<DocumentSnapshot>> getMealProgress(String petId, String date) {
+    return _firestore
+        .collection('meal_progress')
+        .doc(petId)
+        .collection('daily_progress')
+        .doc(date)
+        .collection('progress')
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
+  Future<void> updateMealProgress(
+      String petId, String date, String scheduleId, bool status) async {
     try {
-      await _firestore.collection('self_assessments').doc(petId).collection('assessments').doc(date.toString()).set({
-        'assessment': assessment,
+      await _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .collection('progress')
+          .doc(scheduleId)
+          .set({
+        'status': status,
       });
     } catch (e) {
-      print('Error adding self assessment: $e');
+      print('Error updating meal progress: $e');
       throw e;
     }
   }
 
-  Stream<List<DocumentSnapshot>> getMealSchedules(String petId) {
-    return _firestore.collection('meal_schedules').doc(petId).collection('schedules').snapshots().map((snapshot) => snapshot.docs);
-  }
-
-  Stream<DocumentSnapshot> getSelfAssessment(String petId, DateTime date) {
-    return _firestore.collection('self_assessments').doc(petId).collection('assessments').doc(date.toString()).snapshots();
+  Future<void> autoAddMealProgress(String petId, String date) async {
+    try {
+      final schedules = await _firestore
+          .collection('meal_schedule')
+          .doc(petId)
+          .collection('schedules')
+          .get();
+      for (final schedule in schedules.docs) {
+        final progressCollection = await _firestore
+            .collection('meal_progress')
+            .doc(petId)
+            .collection('daily_progress')
+            .doc(date)
+            .collection('progress')
+            .get();
+        if (progressCollection.docs.length > schedules.docs.length) {
+          continue;
+        }
+        await _firestore
+            .collection('meal_progress')
+            .doc(petId)
+            .collection('daily_progress')
+            .doc(date)
+            .collection('progress')
+            .doc(schedule.id)
+            .set({
+          'status': false,
+        });
+      }
+      print('Auto added meal progress for $date');
+    } catch (e) {
+      print('Error auto adding meal progress: $e');
+      throw e;
+    }
   }
 }
 
