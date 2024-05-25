@@ -78,7 +78,7 @@ class _GroomingMonitoringScreenState extends State<GroomingMonitoringScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(236, 234, 255, 1.0),
+        backgroundColor: const Color.fromRGBO(139, 128, 255, 1.0),
         centerTitle: true,
         title: const Text(
           'Grooming',

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:owpet/src/services/pet_service.dart';
+import 'package:owpet/src/models/pet.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddProfile extends StatefulWidget {
@@ -8,11 +11,15 @@ class AddProfile extends StatefulWidget {
 }
 
 class _AddProfileState extends State<AddProfile> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _birthDateController = TextEditingController();
+  final String userId = 'qUtR4Sp5FAHyOpmxeD9l';
+  final PetService petService = PetService();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
   DateTime _selectedDate = DateTime.now(); // Declare _selectedDate here
   String? _gender;
   String? _status;
+  String? _species;
+  String? _profile;
   TextEditingController _descriptionController = TextEditingController();
   int _lastChecked = -1; // Menyimpan index terakhir yang dipilih
 
@@ -23,6 +30,8 @@ class _AddProfileState extends State<AddProfile> {
     initializeDateFormatting('id', null);
     _gender = null;
     _status = null;
+    _species = null;
+    _profile = null;
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -51,6 +60,21 @@ class _AddProfileState extends State<AddProfile> {
     });
   }
 
+  void addPhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Anda dapat menampilkan foto yang dipilih di UI atau mengunggahnya ke server
+      // Misalnya, menyimpan URL foto ke dalam _profilePicture
+      setState(() {
+        _profile = pickedFile.path;
+      });
+    } else {
+      print('No image selected.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +96,7 @@ class _AddProfileState extends State<AddProfile> {
                     SizedBox(height: 4),
                     GestureDetector(
                       onTap: () {
-                        // Tambahkan logika untuk menambahkan foto
+                        addPhoto();
                       },
                       child: Container(
                         width: 100.0,
@@ -81,11 +105,16 @@ class _AddProfileState extends State<AddProfile> {
                           shape: BoxShape.circle,
                           color: Colors.grey[300],
                         ),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          size: 50.0,
-                          color: Colors.grey[600],
-                        ),
+                        child: _profile != null
+                            ? Image.network(
+                                _profile!,
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(
+                                Icons.add_a_photo_outlined,
+                                size: 50.0,
+                                color: Colors.grey[600],
+                              ),
                       ),
                     ),
                     SizedBox(height: 8),
@@ -93,7 +122,12 @@ class _AddProfileState extends State<AddProfile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: () => _toggleCheck(0),
+                          onTap: () {
+                            _toggleCheck(0);
+                            setState(() {
+                              _species = 'anjing';
+                            });
+                          },
                           child: Container(
                             width: 73,
                             height: 73,
@@ -104,7 +138,7 @@ class _AddProfileState extends State<AddProfile> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Image.asset(
-                              'assets/images/profile/icprofile-1.png',
+                              'assets/images/anjing.png',
                               width: 70,
                               height: 70,
                             ),
@@ -112,7 +146,12 @@ class _AddProfileState extends State<AddProfile> {
                         ),
                         SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => _toggleCheck(1),
+                          onTap: () {
+                            _toggleCheck(1);
+                            setState(() {
+                              _species = 'kucing';
+                            });
+                          },
                           child: Container(
                             width: 73,
                             height: 73,
@@ -123,7 +162,7 @@ class _AddProfileState extends State<AddProfile> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Image.asset(
-                              'assets/images/profile/icprofile-2.png',
+                              'assets/images/kucing.png',
                               width: 70,
                               height: 70,
                             ),
@@ -131,7 +170,12 @@ class _AddProfileState extends State<AddProfile> {
                         ),
                         SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => _toggleCheck(2),
+                          onTap: () {
+                            _toggleCheck(2);
+                            setState(() {
+                              _species = 'kelinci';
+                            });
+                          },
                           child: Container(
                             width: 73,
                             height: 73,
@@ -142,7 +186,7 @@ class _AddProfileState extends State<AddProfile> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Image.asset(
-                              'assets/images/profile/icprofile-3.png',
+                              'assets/images/kelinci.png',
                               width: 70,
                               height: 70,
                             ),
@@ -150,7 +194,12 @@ class _AddProfileState extends State<AddProfile> {
                         ),
                         SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => _toggleCheck(3),
+                          onTap: () {
+                            _toggleCheck(3);
+                            setState(() {
+                              _species = 'burung';
+                            });
+                          },
                           child: Container(
                             width: 73,
                             height: 73,
@@ -161,7 +210,7 @@ class _AddProfileState extends State<AddProfile> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Image.asset(
-                              'assets/images/profile/icprofile-4.png',
+                              'assets/images/burung.png',
                               width: 70,
                               height: 70,
                             ),
@@ -201,11 +250,12 @@ class _AddProfileState extends State<AddProfile> {
                           filled: true,
                           fillColor: Color(0xFFECEAFF), // Warna latar belakang
                           border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(12.0), // Border radius
-                            borderSide: BorderSide.none, // Hilangkan border
+                                  borderRadius: BorderRadius.circular(
+                                      12.0), // Border radius
+                                  borderSide:
+                                      BorderSide.none, // Hilangkan border
                           ),
-                        ),
+                         ),
                       ),
                     ),
                     SizedBox(height: 8),
@@ -300,15 +350,43 @@ class _AddProfileState extends State<AddProfile> {
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          prefixIcon: Icon(Icons.format_align_left_rounded),
-                          contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                          prefixIcon: Image.asset(
+                            'assets/images/icon_desc.png', // Ganti dengan path asset gambar Anda
+                            width: 24, // Sesuaikan lebar gambar
+                            height: 72, // Sesuaikan tinggi gambar
+                          ),
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                         ),
                       ),
                     ),
                     SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        // Implementasi logika untuk menyimpan profil
+                        // Tambahkan validasi sebelum menyimpan data
+                        if (_nameController.text.isEmpty ||
+                            _birthDateController.text.isEmpty ||
+                            _gender == null ||
+                            _status == null ||
+                            _species == null) {
+                          // Tampilkan pesan error atau lakukan penanganan sesuai kebutuhan
+                          return;
+                        }
+
+                        Pet pet = Pet(
+                          id: '',
+                          profile: _profile!,
+                          name: _nameController.text,
+                          gender: _gender!,
+                          status: _status!,
+                          birthday: _birthDateController.text,
+                          species: _species!,
+                          description: _descriptionController.text,
+                        );
+
+                        petService.addPet(userId, pet).then((value) {
+                          Navigator.pop(context);
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:

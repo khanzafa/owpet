@@ -21,9 +21,23 @@ class _EditGroomingScreenState extends State<EditGroomingScreen> {
     _loadTasks();
   }
 
+  Future<void> _deleteTask(String task) async {
+    try {
+      await GroomingProgressService().deleteTask(widget.petId, task);
+      _loadTasks();
+    } catch (e) {
+      print('Error deleting task: $e');
+      // Atau lakukan penanganan kesalahan yang sesuai
+    }
+  }
+
   // Fungsi untuk menambahkan tugas
   Future<void> _addTask(String task) async {
     try {
+      if (task.trim().isEmpty) {
+        throw Exception("Task name cannot be empty");
+      }
+
       // Tambahkan tugas baru ke Firestore
       await GroomingProgressService().addTask(widget.petId, task);
       // Bersihkan field input setelah tugas berhasil ditambahkan
@@ -32,7 +46,7 @@ class _EditGroomingScreenState extends State<EditGroomingScreen> {
     } catch (e) {
       print('Error adding task: $e');
       // Tampilkan pesan kesalahan jika ada
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to add task. Please try again.'),
       ));
     }
@@ -41,7 +55,8 @@ class _EditGroomingScreenState extends State<EditGroomingScreen> {
   Future<void> _loadTasks() async {
     try {
       print('Loading tasks...');
-      List<String> tasks = await GroomingProgressService().getTasks(widget.petId);
+      List<String> tasks =
+          await GroomingProgressService().getTasks(widget.petId);
       setState(() {
         _tasks = tasks;
       });
@@ -52,45 +67,59 @@ class _EditGroomingScreenState extends State<EditGroomingScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Task'),
+        title: const Text('Add Task'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
+            TextFormField(
               controller: _taskController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter task name',
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Task name cannot be empty';
+                }
+                return null;
+              },
             ),
-            SizedBox(height: 16.0),
+
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 // Panggil fungsi untuk menambahkan tugas ketika tombol ditekan
                 _addTask(_taskController.text.trim());
               },
-              child: Text('Add Task'),
+              child: const Text('Add Task'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Tampilkan daftar tugas yang sudah ada
-            if (_tasks.isNotEmpty)
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: _tasks.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_tasks[index]),
-                  );
-                },
-              ),
-            
+            Expanded(
+              child: _tasks.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _tasks.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(_tasks[index]),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              _deleteTask(_tasks[index]);
+                            },
+                          ),
+                        );
+                      },
+                    )
+                  : Container(), // Tambahkan Container jika tidak ada tugas
+            ),
           ],
         ),
       ),
