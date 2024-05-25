@@ -5,7 +5,8 @@ class GroomingProgressService {
 
   Future<bool> checkTasksExist(String petId) async {
     try {
-      final doc = await _firestore.collection('grooming_progress').doc(petId).get();
+      final doc =
+          await _firestore.collection('grooming_progress').doc(petId).get();
       return doc.exists;
     } catch (e) {
       print('Error checking tasks: $e');
@@ -15,7 +16,8 @@ class GroomingProgressService {
 
   Future<List<String>> getTasks(String petId) async {
     try {
-      final doc = await _firestore.collection('grooming_progress').doc(petId).get();
+      final doc =
+          await _firestore.collection('grooming_progress').doc(petId).get();
       if (doc.exists) {
         return List<String>.from(doc.data()!['tasks']);
       } else {
@@ -27,10 +29,42 @@ class GroomingProgressService {
     }
   }
 
+  Future<void> deleteTask(String petId, String task) async {
+    try {
+      // Dapatkan daftar tugas yang sudah ada
+      final doc =
+          await _firestore.collection('grooming_progress').doc(petId).get();
+      List<String> currentTasks = [];
+      if (doc.exists) {
+        currentTasks = List<String>.from(doc.data()!['tasks']);
+      }
+
+      // Hapus tugas dari daftar
+      currentTasks.remove(task);
+
+      // Simpan daftar tugas yang sudah diperbarui kembali ke Firestore
+      await _firestore.collection('grooming_progress').doc(petId).set({
+        'tasks': currentTasks,
+      });
+
+      // Hapus progres tugas yang terkait jika ada
+      await _firestore
+          .collection('grooming_progress')
+          .doc(petId)
+          .collection('task_progress')
+          .doc(task)
+          .delete();
+    } catch (e) {
+      print('Error deleting task: $e');
+      throw e; // Atau lakukan penanganan kesalahan yang sesuai
+    }
+  }
+
   Future<void> addTask(String petId, String newTask) async {
     try {
       // Ambil daftar tugas yang sudah ada
-      final doc = await _firestore.collection('grooming_progress').doc(petId).get();
+      final doc =
+          await _firestore.collection('grooming_progress').doc(petId).get();
       List<String> currentTasks = [];
       if (doc.exists) {
         currentTasks = List<String>.from(doc.data()!['tasks']);
@@ -72,7 +106,6 @@ class GroomingProgressService {
             .doc(doc.id)
             .update({
           'progress': currentProgress,
-          
         });
       }
     } catch (e) {
@@ -81,8 +114,8 @@ class GroomingProgressService {
     }
   }
 
-  Future<void> saveGroomingProgress(String petId, List<String> tasks, DateTime date,
-      List<bool> progress, String description) async {
+  Future<void> saveGroomingProgress(String petId, List<String> tasks,
+      DateTime date, List<bool> progress, String description) async {
     try {
       // Menyimpan tasks
       await _firestore.collection('grooming_progress').doc(petId).set({
@@ -124,11 +157,12 @@ class GroomingProgressService {
     }
   }
 
-Future<void> updateTaskProgress(
+  Future<void> updateTaskProgress(
       String petId, DateTime date, int index, bool value) async {
     try {
       // Ambil daftar tugas yang sudah ada
-      final doc = await _firestore.collection('grooming_progress').doc(petId).get();
+      final doc =
+          await _firestore.collection('grooming_progress').doc(petId).get();
       List<String> currentTasks = [];
       if (doc.exists) {
         currentTasks = List<String>.from(doc.data()!['tasks']);
@@ -152,7 +186,8 @@ Future<void> updateTaskProgress(
         // currentProgressTime = List<DateTime>.filled(currentTasks.length, DateTime.now());
       }
 
-      final progressDocId = progressDoc.id??DateTime.now().toString().split(' ')[0];
+      final progressDocId =
+          progressDoc.id ?? DateTime.now().toString().split(' ')[0];
 
       // Update nilai progres pada indeks yang sesuai
       currentProgress[index] = value;
@@ -173,5 +208,4 @@ Future<void> updateTaskProgress(
       throw e; // Atau lakukan penanganan kesalahan yang sesuai
     }
   }
-
 }
