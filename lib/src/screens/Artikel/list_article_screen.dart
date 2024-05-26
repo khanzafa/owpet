@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'detail_article_screen.dart';
 
 void main() {
@@ -57,12 +58,20 @@ class _ArtikelPageState extends State<ArtikelPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // aksi tombol kembali
-          },
+          icon: Image.asset(
+            'assets/images/icon-park-solid_back.png',
+            height: 24, // Set height according to your needs
+            width: 24, // Set width according to your needs
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Artikel', style: TextStyle(fontFamily: 'Poppins', fontSize: 32)),
+        title: Text(
+          'Artikel',
+          style: GoogleFonts.jua(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),        
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16.0),

@@ -18,17 +18,22 @@ class DoctorDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8b80ff),
-        title: Text(
-          'Detail Doctor',
-          style: GoogleFonts.jua(
-            color: Colors.white,
-          ),
-        ),
+        // backgroundColor: Color(0xFF8b80ff),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: Image.asset(
+            'assets/images/icon-park-solid_back.png',
+            height: 24, // Set height according to your needs
+            width: 24, // Set width according to your needs
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          'Detail Dokter',
+          style: GoogleFonts.jua(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ), 
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'list_doctor_detailed.dart';
+import 'package:owpet/src/screens/Dokter/list_doctor_detailed.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -26,52 +27,22 @@ class DoctorListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(125.0),
-        child: AppBar(
-          backgroundColor: Color(0xFF8b80ff),
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 16.0, right: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    Text(
-                      'List Doctor',
-                      style: GoogleFonts.jua(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Container(
-                  height: 36.0,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintStyle: GoogleFonts.poppins(fontSize: 14),
-                      prefixIcon: Icon(Icons.search, color: Color(0xFF8b80ff)),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(vertical: 8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    style: GoogleFonts.poppins(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Image.asset(
+            'assets/images/icon-park-solid_back.png',
+            height: 24, // Set height according to your needs
+            width: 24, // Set width according to your needs
           ),
+          onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          'Daftar Dokter',
+          style: GoogleFonts.jua(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ), 
       ),
       body: ListView.builder(
         itemCount: doctors.length + 1, // +1 untuk teks di atas daftar dokter

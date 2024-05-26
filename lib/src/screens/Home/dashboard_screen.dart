@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
 import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
-
-import '../Profile/profile_user_screen.dart';
+import 'package:owpet/src/screens/Artikel/list_article_screen.dart';
+import 'package:owpet/src/screens/Dokter/list_doctor.dart';
 
 Widget _buildGridItem(String title, IconData icon, BuildContext context) {
   return Card(
@@ -33,15 +33,15 @@ Widget _buildGridItem(String title, IconData icon, BuildContext context) {
           //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
           // );
         } else if (title == 'Artikel') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ArtikelPage()),
+          );
         } else if (title == 'Dokter') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DoctorListPage()),
+          );
         } else if (title == 'Komunitas') {
           Navigator.push(
             context,
