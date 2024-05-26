@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:owpet/src/screens/edit_pet_screen.dart';
+import 'package:owpet/src/models/pet.dart';
+import 'package:owpet/src/screens/Pets/edit_pet_screen.dart';
 import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
-import 'package:owpet/src/screens/meal_monitoring_screen.dart';
-import '../models/pet.dart';
+import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
+
 
 class PetDetailScreen extends StatelessWidget {
   final String userId = 'qUtR4Sp5FAHyOpmxeD9l';
@@ -192,13 +193,13 @@ class PetDetailScreen extends StatelessWidget {
                               alignment: Alignment.bottomRight,
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditPetScreen(
-                                              userId: userId,
-                                              pet: pet,
-                                            )));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => EditPetScreen(
+                                //               userId: userId,
+                                //               pet: pet,
+                                //             )));
                               },
                             ),
                           ],

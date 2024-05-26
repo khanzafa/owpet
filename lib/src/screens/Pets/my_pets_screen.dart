@@ -1,21 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/add_profile.dart';
-import 'package:owpet/src/screens/detail_pet_screen.dart';
-import '../models/pet.dart';
-import '../services/pet_service.dart';
+import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
+import 'package:owpet/src/screens/Pets/detail_pet_screen.dart';
+import 'package:owpet/src/services/pet_service.dart';
+import 'package:owpet/src/models/pet.dart';
 
 class MyPetsScreen extends StatelessWidget {
   final String userId;
   final PetService petService = PetService();
-  final List<String> categories = ['All', 'Anjing', 'Kucing', 'Kelinci', 'Burung'];
+  final List<String> categories = [
+    'All',
+    'Anjing',
+    'Kucing',
+    'Kelinci',
+    'Burung'
+  ];
 
   MyPetsScreen({required this.userId});
 
   void _navigateToAddPetScreen(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddProfile()),
+      MaterialPageRoute(builder: (context) => AddPetScreen()),
     );
   }
 
@@ -23,37 +31,38 @@ class MyPetsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8B80FF),
+        backgroundColor: Color(0xFF8B80FF),      
         title: Text(
           'Pets',
-          style: TextStyle(
-            fontFamily: 'Jua',
+          style: GoogleFonts.jua(
+            fontSize: 24,            
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            color: Color(0xFF8B80FF), // Background color for the categories
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                height: 35, // Adjust the height as needed
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildCategoryButton(categories[index]),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
+          // Container(
+          //   color: Color(0xFF8B80FF), // Background color for the categories
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 16),
+          //     child: SizedBox(
+          //       height: 35, // Adjust the height as needed
+          //       child: ListView.builder(
+          //         scrollDirection: Axis.horizontal,
+          //         itemCount: categories.length,
+          //         itemBuilder: (context, index) {
+          //           return Padding(
+          //             padding: const EdgeInsets.symmetric(horizontal: 8),
+          //             child: buildCategoryButton(categories[index]),
+          //           );
+          //         },
+          //       ),
+          //     ),
+          //   ),
+          // ),
           Container(
             color: Color(0xFF8B80FF), // Updated background color
             child: Padding(
@@ -64,8 +73,10 @@ class MyPetsScreen extends StatelessWidget {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search...',
-                    hintStyle: TextStyle(color: Colors.black), // Updated hint text color
-                    prefixIcon: Icon(Icons.search, color: Colors.black), // Updated icon color
+                    hintStyle: TextStyle(
+                        color: Colors.black), // Updated hint text color
+                    prefixIcon: Icon(Icons.search,
+                        color: Colors.black), // Updated icon color
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -137,7 +148,6 @@ class MyPetsScreen extends StatelessWidget {
     );
   }
 
-
   Widget buildCategoryButton(String category) {
     return FittedBox(
       child: Container(
@@ -189,7 +199,7 @@ class MyPetsScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    pet.species,
+                    pet.species?.toUpperCase() ?? 'Unknown',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -215,12 +225,12 @@ class MyPetsScreen extends StatelessWidget {
                         ),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.asset(
-                          'assets/images/flutter_logo.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            pet.photoUrl ??
+                                "https://source.unsplash.com/random/?cat",
+                            fit: BoxFit.cover,
+                          )),
                     ),
                     SizedBox(height: 8),
                     Row(
@@ -238,8 +248,10 @@ class MyPetsScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 4),
                         Icon(
-                          pet.gender == 'Male' ? Icons.male : Icons.female,
-                          color: pet.gender == 'Male' ? Colors.blue : Colors.pink,
+                          pet.gender == 'Jantan' ? Icons.male : Icons.female,
+                          color: pet.gender == 'Betina'
+                              ? Colors.blue
+                              : Colors.pink,
                         ),
                       ],
                     ),

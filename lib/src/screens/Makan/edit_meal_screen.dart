@@ -85,37 +85,37 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Meal Type'),
-                value: _selectedMealType,
-                items: [
-                  DropdownMenuItem(
-                    value: 'Dry Food',
-                    child: Text('Dry Food'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Wet Food',
-                    child: Text('Wet Food'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Snack',
-                    child: Text('Snack'),
-                  ),
-                ],
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedMealType = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a meal type';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _selectedMealType = value;
-                },
-              ),
+                  decoration: InputDecoration(labelText: 'Meal Type'),
+                  value: _selectedMealType,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Dry Food',
+                      child: Text('Dry Food'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Wet Food',
+                      child: Text('Wet Food'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Snack',
+                      child: Text('Snack'),
+                    ),
+                  ],
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedMealType = newValue;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a meal type';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _selectedMealType = value;
+                  },
+                ),
                 TextFormField(
                   controller: _weightController,
                   decoration: InputDecoration(labelText: 'Weight'),
@@ -133,7 +133,7 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
                       _selectedTime.format(context),
                     ),
                   ),
-                ),                
+                ),
               ],
             ),
           ),
