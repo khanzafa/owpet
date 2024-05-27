@@ -42,7 +42,7 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
 
   void _loadUserData() async {
     final authService = Provider.of<AuthService>(context, listen: false);
-    this.user = await authService.getActiveUser();
+    user = (await authService.getActiveUser())!;
     setState(() {
       photoUrl = user.photo;
       name = user.name;

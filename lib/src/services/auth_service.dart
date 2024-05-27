@@ -94,7 +94,7 @@ class AuthService {
   }
 
   // Get the currently active user
-  Future<User> getActiveUser() async {
+  Future<User?> getActiveUser() async {
     if (_user == null) {
       final user = _auth.currentUser;
       if (user != null) {
@@ -102,7 +102,7 @@ class AuthService {
         _user = User.fromJson({'id': user.uid, ...doc.data() ?? {}});
       }
     }
-    return _user!;
+    return _user;
   }
 
   // Sign out the current user

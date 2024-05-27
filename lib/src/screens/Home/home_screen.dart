@@ -52,16 +52,12 @@ class _MyHomeScreenState extends State<MyHomeScreen>
 
   void _fetchCurrentUser() async {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final User user = await authService.getActiveUser();
-    setState(() {
-      _currentUser.id = user.id;
-      _currentUser.email = user.email;
-      _currentUser.name = user.name;
-      _currentUser.password = user.password;
-      _currentUser.telephone = user.telephone;
-      _currentUser.description = user.description;
-      _currentUser.photo = user.photo;
-    });
+    final User? user = await authService.getActiveUser();
+    if (user != null) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
   }
 
   @override

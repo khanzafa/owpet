@@ -54,6 +54,10 @@ class PetService {
   Future uploadImage(String userId, String petId, String filePath) async {
     try {
       final ref = storage.ref().child('users/$userId/pets/$petId.jpg');
+      final file = File(filePath);
+      if (!file.existsSync()) {
+        return null;
+      }
       final result = await ref.putFile(File(filePath));
       final url = await result.ref.getDownloadURL();
 
@@ -66,20 +70,24 @@ class PetService {
   // update pet
   Future updatePet(String userId, Pet pet) async {
     try {
+      final petData = pet.toJson();
+      final petId = pet.id;
+      petData.remove('id');
       await _firestore
           .collection('users')
           .doc(userId)
           .collection('pets')
-          .doc(pet.id)
-          .update({
-        'name': pet.name,
-        'species': pet.species,
-        'birthday': pet.birthday,
-        'gender': pet.gender,
-        'status': pet.status,
-        'description': pet.description,
-        'photoUrl': pet.photoUrl,
-      });
+          .doc(petId)
+          .update(petData);
+      if (pet.photoUrl != null) {
+        final photoUrl = await uploadImage(userId, petId, pet.photoUrl!);
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('pets')
+            .doc(petId)
+            .update({'photoUrl': photoUrl});
+      }
     } catch (e) {
       print('Error updating pet: $e');
     }

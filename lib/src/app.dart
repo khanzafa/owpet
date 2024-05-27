@@ -115,7 +115,7 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
 
-    return FutureBuilder<User>(
+    return FutureBuilder<User?>(
       future: authService.getActiveUser(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

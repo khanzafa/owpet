@@ -302,39 +302,39 @@ Join the discussion on Owpet App!
                                     )),
                           ),
                           SizedBox(height: 5),
-                          imagesToShow.isNotEmpty
-                              ? Row(
-                                  children: imagesToShow
-                                      .map(
-                                        (image) => Expanded(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.5, // Contoh rasio 16:9
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 5, vertical: 10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: Image.network(
-                                                image,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                )
-                              : SizedBox(height: 5),
+                          // imagesToShow.isNotEmpty
+                          //     ? Row(
+                          //         children: imagesToShow
+                          //             .map(
+                          //               (image) => Expanded(
+                          //                 child: Container(
+                          //                   width: MediaQuery.of(context)
+                          //                       .size
+                          //                       .width,
+                          //                   height: MediaQuery.of(context)
+                          //                           .size
+                          //                           .width *
+                          //                       0.5, // Contoh rasio 16:9
+                          //                   margin: EdgeInsets.symmetric(
+                          //                       horizontal: 5, vertical: 10),
+                          //                   decoration: BoxDecoration(
+                          //                     borderRadius:
+                          //                         BorderRadius.circular(10),
+                          //                   ),
+                          //                   child: ClipRRect(
+                          //                     borderRadius:
+                          //                         BorderRadius.circular(10),
+                          //                     child: Image.network(
+                          //                       image,
+                          //                       fit: BoxFit.cover,
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             )
+                          //             .toList(),
+                          //       )
+                          //     : SizedBox(height: 5),
                           Row(
                             children: [
                               // Like

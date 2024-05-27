@@ -39,8 +39,8 @@ class MealService {
       Meal(id: '', mealType: 'Dry Food', weight: 32, time: '15:00'),
       Meal(id: '', mealType: 'Dry Food', weight: 40, time: '19:45'),
     ];
-    String michelPetId = 'Ma5mrN25idX5yqWJUTyr'; 
-    String lunaPetId = 'RNU5VGezHkoCjxaRWlUN'; 
+    String michelPetId = 'Ma5mrN25idX5yqWJUTyr';
+    String lunaPetId = 'RNU5VGezHkoCjxaRWlUN';
 
     for (var meal in dataMichel) {
       await addMealSchedule(petId: michelPetId, meal: meal);
@@ -71,6 +71,37 @@ class MealService {
         .snapshots();
   }
 
+  Future<void> updateMealSchedule(
+      String petId, String scheduleId, Meal meal) async {
+    try {
+      final mealData = meal.toJson();
+      mealData.remove('id');
+      await _firestore
+          .collection('meal_schedule')
+          .doc(petId)
+          .collection('schedules')
+          .doc(scheduleId)
+          .update(mealData);
+    } catch (e) {
+      print('Error updating meal schedule: $e');
+      throw e;
+    }
+  }
+
+  Future<void> deleteMealSchedule(String petId, String scheduleId) async {
+    try {
+      await _firestore
+          .collection('meal_schedule')
+          .doc(petId)
+          .collection('schedules')
+          .doc(scheduleId)
+          .delete();
+    } catch (e) {
+      print('Error deleting meal schedule: $e');
+      throw e;
+    }
+  }
+
   Stream<List<DocumentSnapshot>> getMealProgress(String petId, String date) {
     return _firestore
         .collection('meal_progress')
@@ -85,6 +116,7 @@ class MealService {
   Future<void> updateMealProgress(
       String petId, String date, String scheduleId, bool status) async {
     try {
+      print("Update Meal Progress: $petId, $date, $scheduleId, $status");
       await _firestore
           .collection('meal_progress')
           .doc(petId)
@@ -105,18 +137,22 @@ class MealService {
           .collection('progress')
           .get();
 
-      bool allCompleted = progressCollection.docs
-          .every((doc) => doc.data()['status'] == true);
+      bool allCompleted =
+          progressCollection.docs.every((doc) => doc.data()['status'] == true);
 
       if (allCompleted) {
+        print("All meal progress items are complete");
         await completeMealProgressDay(petId, date);
+      } else {
+        print("Not all meal progress items are complete");
+        await uncompleteMealProgressDay(petId, date);
       }
     } catch (e) {
       print('Error updating meal progress: $e');
       throw e;
     }
   }
-  
+
   Future<void> completeMealProgressDay(String petId, String date) async {
     try {
       final progressDoc = await _firestore
@@ -125,11 +161,7 @@ class MealService {
           .collection('daily_progress')
           .doc(date)
           .get();
-      if (progressDoc.exists) {
-        await progressDoc.reference.update({'isCompleted': true});
-      } else {
-        print('Progress document does not exist for $date');
-      }
+      await progressDoc.reference.set({'isCompleted': true});
       print('Completed meal progress for $date');
     } catch (e) {
       print('Error completing meal progress: $e');
@@ -137,35 +169,55 @@ class MealService {
     }
   }
 
+  Future<void> uncompleteMealProgressDay(String petId, String date) async {
+    try {
+      final progressDoc = await _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .get();
+      await progressDoc.reference.set({'isCompleted': false});
+      print('Uncompleted meal progress for $date');
+    } catch (e) {
+      print('Error uncompleting meal progress: $e');
+      throw e;
+    }
+  }
+
   Future<void> autoAddMealProgress(String petId, String date) async {
     try {
-      final schedules = await _firestore
+      final schedulesSnapshot = await _firestore
           .collection('meal_schedule')
           .doc(petId)
           .collection('schedules')
           .get();
-      for (final schedule in schedules.docs) {
-        final progressCollection = await _firestore
-            .collection('meal_progress')
-            .doc(petId)
-            .collection('daily_progress')
-            .doc(date)
-            .collection('progress')
-            .get();
-        if (progressCollection.docs.length > schedules.docs.length) {
-          continue;
+
+      final progressSnapshot = await _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .collection('progress')
+          .get();
+
+      final existingProgressIds =
+          progressSnapshot.docs.map((doc) => doc.id).toSet();
+      final scheduleIds = schedulesSnapshot.docs.map((doc) => doc.id).toList();
+
+      for (final scheduleId in scheduleIds) {
+        if (!existingProgressIds.contains(scheduleId)) {
+          await _firestore
+              .collection('meal_progress')
+              .doc(petId)
+              .collection('daily_progress')
+              .doc(date)
+              .collection('progress')
+              .doc(scheduleId)
+              .set({'status': false});
         }
-        await _firestore
-            .collection('meal_progress')
-            .doc(petId)
-            .collection('daily_progress')
-            .doc(date)
-            .collection('progress')
-            .doc(schedule.id)
-            .set({
-          'status': false,
-        });
       }
+
       print('Auto added meal progress for $date');
     } catch (e) {
       print('Error auto adding meal progress: $e');

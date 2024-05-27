@@ -25,6 +25,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
     super.initState();
     _autoAddMealProgress();
     _setSelectedWeek(_selectedDate);
+    _selectedMonth = _selectedDate.toString().split(' ')[0].split('-')[1];
   }
 
   Future<void> _autoAddMealProgress() async {
@@ -60,6 +61,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
   }
 
   Future<void> _updateMealStatus(String scheduleId, bool status) async {
+    print('Updating meal status: $status');
     await _mealService.updateMealProgress(
       widget.petId,
       _selectedDate.toString().split(' ')[0],
@@ -107,14 +109,6 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
             final mealProgress = snapshot.data!;
             return Column(
               children: [
-                Text(
-                  'Monitoring Bulan ke-$_selectedMonth',
-                  textAlign: TextAlign.start,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 buildDayCheckboxes(_selectedWeek),
                 buildReminderCard(),
                 Expanded(
@@ -129,8 +123,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                           if (mealSnapshot.connectionState ==
                               ConnectionState.waiting) {
                             return ListTile(
-                              title: Text('Loading...'),
-                              trailing: CircularProgressIndicator(),
+                              title: Text('Loading schedule...'),
                             );
                           }
                           if (!mealSnapshot.hasData) {
@@ -143,26 +136,42 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                           return Card(
                             margin: EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
-                            child: ListTile(
-                                leading: Text('${index + 1}',
-                                    style: TextStyle(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFFECEAFF),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                  // Ganti leading dengan ikon
+                                  leading: Text('${index + 1}',
+                                      style: GoogleFonts.jua(
                                         fontSize: 20,
-                                        fontWeight: FontWeight.bold)),
-                                title: Text(mealSchedule['mealType'],
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
-                                subtitle: Text(
-                                    'Weight: ${mealSchedule['weight']}g\nTime: ${mealSchedule['time']}',
-                                    style: TextStyle(fontSize: 16)),
-                                trailing: Checkbox(
-                                  value: meal['status'],
-                                  onChanged: (value) {
-                                    setState(() {
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  title: Text(mealSchedule['mealType'],
+                                      style: GoogleFonts.jua(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  subtitle: Text(
+                                      'Pukul ${mealSchedule['time']} => ${mealSchedule['weight']} gram',
+                                      style: GoogleFonts.jua(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      )),
+                                  trailing: Checkbox(                                    
+                                    fillColor: MaterialStateProperty.all(
+                                        Color(0xFF8B80FF)),
+                                    side: BorderSide(color: Colors.transparent),                                    
+                                    value: meal['status'],
+                                    onChanged: (value) {
                                       _updateMealStatus(meal.id, value!);
-                                    });
-                                  },
-                                )),
+                                      // setState(() {
+                                      //   _updateMealStatus(meal.id, value!);
+                                      // });
+                                    },
+                                  )),
+                            ),
                           );
                         },
                       );
@@ -180,9 +189,13 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                 builder: (context) =>
                     AddEditMealSchedulePage(petId: widget.petId)),
           );
+          _autoAddMealProgress();
         },
         tooltip: 'Add Meal Schedule',
-        child: Icon(Icons.add),
+        child: Icon(Icons.edit, color: Colors.white),
+        backgroundColor: Color.fromRGBO(252, 147, 64, 1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50)),
       ),
     );
   }
@@ -210,47 +223,106 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
   // }
 
   Widget buildDayCheckboxes(List<DateTime> selectedWeek) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(selectedWeek.length, (index) {
-        final day = selectedWeek[index];
-        return StreamBuilder<List<DocumentSnapshot>>(
-          stream: _mealService.getMealProgress(
-            widget.petId,
-            '${day.year}-${day.month}-${day.day}',
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            'Monitoring Bulan ke-$_selectedMonth',
+            textAlign: TextAlign.start,
+            style: GoogleFonts.jua(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              // If no meal progress data found for the day, return an empty checkbox
-              return Checkbox(
-                value: false,
-                onChanged: null,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Color(0xFF8B80FF),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(selectedWeek.length, (index) {
+              final day = selectedWeek[index];
+              final dateString =
+                  '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+
+              return StreamBuilder<List<DocumentSnapshot>>(
+                stream: _mealService.getMealProgress(widget.petId, dateString),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Column(
+                      children: [
+                        Checkbox(
+                          value: false,
+                          onChanged: null,
+                          side: BorderSide(color: Colors.white),
+                          fillColor: MaterialStateProperty.all(Colors.white),
+                        ),
+                        // Text('${day.day}/${day.month}'),
+                      ],
+                    );
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Column(
+                      children: [
+                        Checkbox(
+                          value: false,
+                          onChanged: null,
+                          side: BorderSide(color: Colors.white),
+                          fillColor: MaterialStateProperty.all(Colors.white),
+                        ),
+                        // Text('${day.day}/${day.month}'),
+                      ],
+                    );
+                  }
+
+                  final mealProgress = snapshot.data!;
+                  bool allCompleted =
+                      mealProgress.every((meal) => meal['status'] == true);
+
+                  return Column(
+                    children: [
+                      Checkbox(
+                        side: BorderSide(color: Colors.white),
+                        value: allCompleted,
+                        onChanged: null,
+                        fillColor: MaterialStateProperty.all(Colors.white),
+                      ),
+                      // Text('${day.day}/${day.month}'),
+                    ],
+                  );
+                },
               );
-            }
-            final mealProgress = snapshot.data!;
-            bool allCompleted = mealProgress.every(
-              (meal) => meal['status'] == true,
-            );
-            return Checkbox(
-              value: allCompleted,
-              onChanged: null,
-            );
-          },
-        );
-      }),
+            }),
+          ),
+        ),
+      ],
     );
   }
 
   Widget buildReminderCard() {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFECEAFF),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      alignment: Alignment.center,
+      height: 80,
       margin: EdgeInsets.all(10),
       child: ListTile(
         leading: Icon(Icons.pets, color: Colors.orange, size: 40),
-        title: Text('Don\'t forget to feed your pet!',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        titleAlignment: ListTileTitleAlignment.center,
+        title: Text('Jangan lupa beri makan pet kesayanganmu ya!',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.jua(
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            )),
       ),
     );
   }

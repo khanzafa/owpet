@@ -5,25 +5,34 @@ import 'package:owpet/src/screens/Pets/edit_pet_screen.dart';
 import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
 import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 
-
 class PetDetailScreen extends StatelessWidget {
-  final String userId = 'qUtR4Sp5FAHyOpmxeD9l';
+  final String userId;
   final Pet pet;
   final bool showedModal = true;
 
-  PetDetailScreen({required this.pet});
+  PetDetailScreen({required this.userId, required this.pet});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded), // Replace with your desired icon
+          icon: Image.asset(
+            'assets/images/icon-park-solid_back.png',
+            height: 24,
+            width: 24,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Pet Details'),
-        backgroundColor:
-            Color.fromRGBO(139, 128, 255, 1), // Set app bar color the same
+        title: Text(
+          'Detail Pet',
+          style: GoogleFonts.jua(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        // backgroundColor:
+        //     Color.fromRGBO(139, 128, 255, 1), // Set app bar color the same
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -34,7 +43,7 @@ class PetDetailScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.topCenter,
               child: Image.asset(
-                'assets/images/kelinci.png',
+                'assets/images/kucing.png',
                 width: 270,
                 height: 270,
               ),
@@ -59,155 +68,46 @@ class PetDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Title
-                  Text(
-                    'DETAIL',
-                    style: GoogleFonts.jua(
-                      fontSize: 24.0,
-                      color: Colors.black,
-                    ),
+                  // Text(
+                  //   'DETAIL',
+                  //   style: GoogleFonts.jua(
+                  //     fontSize: 24.0,
+                  //     color: Colors.black,
+                  //   ),
+                  // ),
+                  // SizedBox(height: 12.0),
+                  PetInfoCard(
+                    petName: pet.name,
+                    petImage: pet.photoUrl ?? '',
+                    petDob: DateTime.parse(pet.birthday!),
+                    petGender: pet.gender!,
+                    petMaritalStatus: pet.status!,
+                    petSpecies: pet.species!,
+                    petDescription: pet.description!,
+                    onEditPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditPetScreen(
+                            userId: userId,
+                            pet: pet,
+                          ),
+                        ),
+                      );
+                      // refresh pet data
+                      await Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PetDetailScreen(
+                            userId: userId,
+                            pet: pet,
+                          ),
+                        ),
+                      );
+
+                    },
                   ),
                   SizedBox(height: 12.0),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    width: 350.0, // Adjust width as needed
-                    height: 200.0, // Adjust height as needed
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(236, 234, 255, 1),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 10.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.cake,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    '${pet.birthday}',
-                                    style: GoogleFonts.jua(
-                                      fontSize: 16.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.pets,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    '${pet.species}',
-                                    style: GoogleFonts.jua(
-                                      fontSize: 16.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.pets,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    '${pet.gender}',
-                                    style: GoogleFonts.jua(
-                                      fontSize: 16.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.pets,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    '${pet.status}',
-                                    style: GoogleFonts.jua(
-                                      fontSize: 16.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10.0),
-                              Text(
-                                '${pet.description}',
-                                style: GoogleFonts.jua(
-                                  fontSize: 16.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ]),
-                        SizedBox(width: 5.0), // Spacing between text and image
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/images/kelinci.png',
-                              width: 100,
-                              height: 100,
-                            ),
-                            Text(
-                              '${pet.name}',
-                              style: GoogleFonts.jua(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                            SizedBox(height: 10.0),
-                            // edit icon button
-                            IconButton(
-                              alignment: Alignment.bottomRight,
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => EditPetScreen(
-                                //               userId: userId,
-                                //               pet: pet,
-                                //             )));
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
                   Text(
                     'PERAWATAN HARIAN',
                     style: GoogleFonts.jua(
@@ -280,63 +180,6 @@ class PetDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-
-      // body: Padding(
-      //   padding: EdgeInsets.all(16.0),
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       Text(
-      //         'Name: ${pet.name}',
-      //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      //       ),
-      //       SizedBox(height: 8),
-      //       Text('ID: ${pet.id}'),
-      //       Text('Birthday: ${pet.birthday}'),
-      //       Text('Gender: ${pet.gender}'),
-      //       Text('Species: ${pet.species}'),
-      //       Text('Status: ${pet.status}'),
-      //       if (pet.description != null) // Tampilkan deskripsi hanya jika ada
-      //         Text('Description: ${pet.description}'),
-      //       SizedBox(height: 16),
-      //       // Card untuk ke halaman monitoring makan
-      //       Card(
-      //         child: ListTile(
-      //           title: Text('Feeding Monitoring'),
-      //           subtitle: Text('Monitor your pet\'s feeding schedule'),
-      //           onTap: () {
-      //             Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                   builder: (context) => MealMonitoringScreen(petId: pet.id,),
-      //                 ),
-      //               );
-      //           },
-      //         ),
-      //       ),
-      //       // Card untuk ke halaman monitoring kesehatan
-      //       Card(
-      //         child: ListTile(
-      //           title: Text('Health Monitoring'),
-      //           subtitle: Text('Monitor your pet\'s health status'),
-      //           onTap: () {
-      //             // Navigasi ke halaman monitoring kesehatan
-      //           },
-      //         ),
-      //       ),
-      //       // Card untuk ke halaman monitoring perawatan
-      //       Card(
-      //         child: ListTile(
-      //           title: Text('Grooming Monitoring'),
-      //           subtitle: Text('Monitor your pet\'s grooming schedule'),
-      //           onTap: () {
-      //             // Navigasi ke halaman monitoring perawatan
-      //           },
-      //         ),
-      //       )
-      //     ],
-      //   ),
-      // ),
     );
   }
 
@@ -368,34 +211,130 @@ class PetDetailScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  void _showModalBottomSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 600, // Adjust height as needed
-          color: Colors.white, // Customize background color
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // Prevents content overflow
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Image.asset(
-                    'assets/images/kelinci.png',
-                    width: 200,
-                    height: 200,
-                  ),
+class PetInfoCard extends StatelessWidget {
+  final String petName;
+  final String petImage;
+  final DateTime petDob;
+  final String petGender;
+  final String petMaritalStatus;
+  final String petSpecies;
+  final String petDescription;
+  final VoidCallback onEditPressed;
+
+  const PetInfoCard({
+    Key? key,
+    required this.petName,
+    required this.petImage,
+    required this.petDob,
+    required this.petGender,
+    required this.petMaritalStatus,
+    required this.petSpecies,
+    required this.petDescription,
+    required this.onEditPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 220,
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
+      width: 350.0,
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(236, 234, 255, 1),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Row(
+            children: [
+              // Pet name and image
+              Container(
+                width: 80,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    petImage.isNotEmpty
+                        ? Image.network(
+                            petImage,
+                            width: 80,
+                            height: 80,
+                          )
+                        : Image.asset(
+                            'assets/images/kucing.png',
+                            width: 80,
+                            height: 80,
+                          ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      petName.toUpperCase(),
+                      style: GoogleFonts.jua(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
-                Text('Additional Pet Information'),
-                // Add more details here (e.g., favorite food, vet info)
-              ],
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildPetDetailRow(
+                        Icons.calendar_today, petDob.toString().split(' ')[0]),
+                    _buildPetDetailRow(Icons.person, petGender),
+                    _buildPetDetailRow(Icons.favorite, petMaritalStatus),
+                    _buildPetDetailRow(Icons.pets, petSpecies),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      petDescription,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.jua(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: Icon(Icons.edit,
+                  color: Color.fromRGBO(252, 147, 64, 1), size: 20.0),
+              onPressed: () {
+                onEditPressed();
+              },
             ),
           ),
-        );
-      },
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPetDetailRow(IconData icon, String value) {
+    return Row(
+      children: [
+        Icon(icon),
+        const SizedBox(width: 8.0),
+        Text('$value'),
+      ],
     );
   }
 }
