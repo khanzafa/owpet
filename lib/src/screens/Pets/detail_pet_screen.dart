@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/models/pet.dart';
 import 'package:owpet/src/screens/Pets/edit_pet_screen.dart';
-import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
+import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
 import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 
 class PetDetailScreen extends StatelessWidget {

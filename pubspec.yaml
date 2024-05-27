@@ -28,6 +28,7 @@ dependencies:
   motion_tab_bar_v2: ^0.3.0
   firebase_auth: ^4.19.6
   provider: ^6.1.2
+  flutter_calendar_carousel: ^2.4.3
 
 dev_dependencies:
   flutter_test:
