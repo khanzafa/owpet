@@ -4,21 +4,38 @@ class MonitoringItem extends StatelessWidget {
   final String title;
   final bool isChecked;
   final Function(bool) onChanged;
+  final int index;
 
-  MonitoringItem(
-      {required this.title, required this.isChecked, required this.onChanged});
+  MonitoringItem({
+    required this.title,
+    required this.isChecked,
+    required this.onChanged,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-        ),),
+      title: Row(
+        children: [
+          Text(
+            '${index + 1}. ',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        ],
+      ),
       trailing: Checkbox(
         side: const BorderSide(
-          width: 9,
+          width: 9.0,
           color: Color.fromRGBO(139, 128, 255, 1.0),
         ),
         fillColor: const MaterialStatePropertyAll(
@@ -26,8 +43,7 @@ class MonitoringItem extends StatelessWidget {
         ),
         checkColor: Colors.black,
         value: isChecked,
-        onChanged:
-            isChecked ? null : (bool? value) => onChanged(value ?? false),
+        onChanged: isChecked ? null : (bool? value) => onChanged(value ?? false),
       ),
     );
   }

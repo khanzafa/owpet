@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class GroomingProgressService {
+class HealthProgressService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static const List<String> _tasks = [
-    'Perawatan Mata',
-    'Perawatan Telinga',
-    'Perawatan Gigi',
-    'Perawatan Kulit dan Bulu',
-    'Perawatan Kuku',
-    'Mandi',
+    'Cek Mata',
+    'Cek Telinga',
+    'Cek Berat Badan',
+    'Cek Suhu Tubuh',
+    'Cek Kulit',
+    'Vaksinasi',
   ];
 
   Future<bool> checkTasksExist(String petId) async {
     try {
       final doc =
-          await _firestore.collection('grooming_progress').doc(petId).get();
+          await _firestore.collection('health_progress').doc(petId).get();
       return doc.exists;
     } catch (e) {
       print('Error checking tasks: $e');
@@ -27,10 +27,45 @@ class GroomingProgressService {
     return _tasks;
   }
 
+  Future<Map<DateTime, int>> getCompletedTasks(String petId) async {
+    Map<DateTime, int> completedTasksPerDate = {};
+
+    try {
+      // Ambil semua task untuk petId yang diberikan
+      QuerySnapshot tasksSnapshot = await _firestore
+          .collection('pets')
+          .doc(petId)
+          .collection('tasks')
+          .get();
+
+      // Iterasi melalui setiap task
+      for (QueryDocumentSnapshot taskDoc in tasksSnapshot.docs) {
+        // Ambil tanggal dan status penyelesaian task
+        Map<String, dynamic>? taskData =
+            taskDoc.data() as Map<String, dynamic>?;
+        DateTime? taskDate = taskData?['date']?.toDate();
+        bool? completed = taskData?['completed'];
+
+        // Jika task diselesaikan, tambahkan ke completedTasksPerDate
+        if (completed == true && taskDate != null) {
+          completedTasksPerDate.update(
+            taskDate,
+            (value) => value + 1,
+            ifAbsent: () => 1,
+          );
+        }
+      }
+    } catch (e) {
+      print('Error getting completed tasks: $e');
+    }
+
+    return completedTasksPerDate;
+  }
+
   Future<List<bool>> getTaskProgress(String petId, DateTime date) async {
     try {
       final doc = await _firestore
-          .collection('grooming_progress')
+          .collection('health_progress')
           .doc(petId)
           .collection('task_progress')
           .doc(date.toString().split(' ')[0])
@@ -51,7 +86,7 @@ class GroomingProgressService {
     try {
       // Ambil progres makan yang sudah ada
       final progressDoc = await _firestore
-          .collection('grooming_progress')
+          .collection('health_progress')
           .doc(petId)
           .collection('task_progress')
           .doc(date.toString().split(' ')[0])
@@ -60,6 +95,7 @@ class GroomingProgressService {
       if (progressDoc.exists) {
         currentProgress = List<bool>.from(progressDoc.data()!['progress']);
       } else {
+        // Jika belum ada progres makan untuk hari ini, inisialisasi dengan nilai false
         currentProgress = List<bool>.filled(_tasks.length, false);
       }
 
@@ -71,7 +107,7 @@ class GroomingProgressService {
 
       // Simpan progres yang sudah diperbarui kembali ke Firestore
       await _firestore
-          .collection('grooming_progress')
+          .collection('health_progress')
           .doc(petId)
           .collection('task_progress')
           .doc(progressDocId)

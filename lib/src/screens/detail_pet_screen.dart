@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/edit_pet_screen.dart';
-import 'package:owpet/src/screens/grooming_monitoring_screen.dart';
+import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
+import 'package:owpet/src/screens/kesehatan/health_monitoring_screen.dart';
 import 'package:owpet/src/screens/meal_monitoring_screen.dart';
 import '../models/pet.dart';
 
@@ -17,7 +18,8 @@ class PetDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded), // Replace with your desired icon
+          icon: Icon(Icons
+              .arrow_back_ios_new_rounded), // Replace with your desired icon
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Pet Details'),
@@ -262,7 +264,13 @@ class PetDetailScreen extends StatelessWidget {
                       const SizedBox(width: 14.0), // Spacing between cards
                       GestureDetector(
                         onTap: () {
-                          // Navigasi ke halaman monitoring kesehatan
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  HealthMonitoringScreen(petId: pet.id),
+                            ),
+                          );
                         },
                         child: const Image(
                           image: AssetImage(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:owpet/src/screens/edit_meal_screen.dart';
+import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
 import 'package:owpet/src/screens/home_screen.dart';
 import 'package:owpet/src/screens/meal_monitoring_screen.dart';
 import 'package:owpet/src/screens/my_pets_screen.dart';
@@ -85,10 +86,10 @@ class MyApp extends StatelessWidget {
           //   );
           // },
           routes: {            
-            // '/': (context) => MyHomeScreen(),
+            '/': (context) => MyHomeScreen(),
 
             // ROUTES FOR TESTING ONLY (KALIAN KALAU MAU SLICING GANTI INI SAMA SCREEN KALIAN)
-            '/': (context) => MealMonitoringScreen(petId: '2jwHq8GSHHxTgZ5orTeT'),
+            // '/': (context) => GroomingMonitoringScreen(petId: '2jwHq8GSHHxTgZ5orTeT'),
           },
         );
       },
