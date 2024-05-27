@@ -23,7 +23,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
   File? _image;
 
   final List<String> genderOptions = ['Jantan', 'Betina'];
-  final List<String> statusOptions = ['Kawin', 'Single'];
+  final List<String> statusOptions = ['Kawin', 'Steril'];
   final List<String> speciesOptions = [
     'Persia',
     'Domestik',

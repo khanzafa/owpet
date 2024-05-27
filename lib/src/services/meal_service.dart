@@ -1,29 +1,56 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:owpet/src/models/meal.dart';
 
 class MealService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addMealSchedule({
     required String petId,
-    required String mealType,
-    required double weight,
-    required TimeOfDay time,
+    required Meal meal,
   }) async {
     try {
+      final mealData = meal.toJson();
+      mealData.remove('id');
       await _firestore
           .collection('meal_schedule')
           .doc(petId)
           .collection('schedules')
-          .add({
-        'mealType': mealType,
-        'weight': weight,
-        'time': '${time.hour}:${time.minute}',
-      });
+          .add(mealData);
     } catch (e) {
       print('Error adding meal schedule: $e');
       throw e;
     }
+  }
+
+  // ADD DATA DUMMY MEAL
+  Future<void> addDataDummy() async {
+    List<Meal> dataMichel = [
+      Meal(id: '', mealType: 'Dry Food', weight: 35, time: '07:00'),
+      Meal(id: '', mealType: 'Snack', weight: 16, time: '12:00'),
+      Meal(id: '', mealType: 'Wet Food', weight: 20, time: '15:00'),
+      Meal(id: '', mealType: 'Dry Food', weight: 40, time: '19:00'),
+    ];
+
+    List<Meal> dataLuna = [
+      Meal(id: '', mealType: 'Dry Food', weight: 30, time: '05:00'),
+      Meal(id: '', mealType: 'Dry Food', weight: 34, time: '09:00'),
+      Meal(id: '', mealType: 'Snack Food', weight: 16, time: '12:00'),
+      Meal(id: '', mealType: 'Dry Food', weight: 32, time: '15:00'),
+      Meal(id: '', mealType: 'Dry Food', weight: 40, time: '19:45'),
+    ];
+    String michelPetId = 'Ma5mrN25idX5yqWJUTyr'; 
+    String lunaPetId = 'RNU5VGezHkoCjxaRWlUN'; 
+
+    for (var meal in dataMichel) {
+      await addMealSchedule(petId: michelPetId, meal: meal);
+    }
+
+    for (var meal in dataLuna) {
+      await addMealSchedule(petId: lunaPetId, meal: meal);
+    }
+
+    print('Data Dummy Added');
   }
 
   Stream<List<DocumentSnapshot>> getMealSchedules(String petId) {
@@ -68,8 +95,44 @@ class MealService {
           .set({
         'status': status,
       });
+
+      // Check if all meal progress items are complete
+      final progressCollection = await _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .collection('progress')
+          .get();
+
+      bool allCompleted = progressCollection.docs
+          .every((doc) => doc.data()['status'] == true);
+
+      if (allCompleted) {
+        await completeMealProgressDay(petId, date);
+      }
     } catch (e) {
       print('Error updating meal progress: $e');
+      throw e;
+    }
+  }
+  
+  Future<void> completeMealProgressDay(String petId, String date) async {
+    try {
+      final progressDoc = await _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .get();
+      if (progressDoc.exists) {
+        await progressDoc.reference.update({'isCompleted': true});
+      } else {
+        print('Progress document does not exist for $date');
+      }
+      print('Completed meal progress for $date');
+    } catch (e) {
+      print('Error completing meal progress: $e');
       throw e;
     }
   }

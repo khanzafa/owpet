@@ -1,26 +1,72 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:owpet/src/services/auth_service.dart';
+import 'package:owpet/src/models/user.dart';
+import 'package:provider/provider.dart';
 
 class ProfileUserScreen extends StatefulWidget {
+  late User user;
+
+  ProfileUserScreen({required this.user});
+  
   @override
   _ProfileUserScreenState createState() => _ProfileUserScreenState();
 }
 
 class _ProfileUserScreenState extends State<ProfileUserScreen> {
-  String name = 'Iqbal Ramadhan';
-  String tagline = 'Pecinta Anjing';
-  String email = 'Iqbalr@gmail.com';
-  String phoneNumber = '0895396789912';
+  String photoUrl = '';
+  String name = '';
+  String tagline = '';
+  String email = '';
+  String phoneNumber = '';
   XFile? _imageFile;
+  User user = User(
+    id: '',
+    email: '',
+    name: '',
+    password: '',
+    telephone: '',
+    description: '',
+    photo: '',
+  );
 
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    this.user = await authService.getActiveUser();
+    setState(() {
+      photoUrl = user.photo;
+      name = user.name;
+      tagline = user.description; // Assuming tagline is stored in description
+      email = user.email;
+      phoneNumber = user.telephone;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text(
+          'Owpets - Profil Pengguna',
+          style: GoogleFonts.jua(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -70,10 +116,12 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                       top: -50,
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: _imageFile == null
-                            ? AssetImage('assets/profile_pic.jpg')
-                            : FileImage(File(_imageFile!.path))
-                                as ImageProvider,
+                        backgroundImage: photoUrl == null || photoUrl.isEmpty
+                            ? Image.asset(
+                                'assets/images/default_profile.png',
+                                fit: BoxFit.cover,
+                              ).image
+                            : NetworkImage(photoUrl) as ImageProvider,
                       ),
                     ),
                   ],
@@ -97,7 +145,14 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              final authService = Provider.of<AuthService>(
+                                  context,
+                                  listen: false);
+                              authService.signOut().then((_) {
+                                Navigator.of(context).pop();
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/login');
+                              });
                             },
                             child: Text('Ya'),
                           ),
@@ -135,7 +190,7 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: _imageFile == null
-                        ? AssetImage('assets/profile_pic.jpg')
+                        ? Image.network(photoUrl).image
                         : FileImage(File(_imageFile!.path)) as ImageProvider,
                     child: Icon(Icons.camera_alt, color: Colors.white70),
                   ),
@@ -144,11 +199,6 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                   initialValue: name,
                   decoration: InputDecoration(labelText: 'Name'),
                   onChanged: (value) => name = value,
-                ),
-                TextFormField(
-                  initialValue: tagline,
-                  decoration: InputDecoration(labelText: 'Tagline'),
-                  onChanged: (value) => tagline = value,
                 ),
                 TextFormField(
                   initialValue: email,
@@ -160,6 +210,11 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                   decoration: InputDecoration(labelText: 'Phone Number'),
                   onChanged: (value) => phoneNumber = value,
                 ),
+                TextFormField(
+                  initialValue: tagline,
+                  decoration: InputDecoration(labelText: 'Tagline'),
+                  onChanged: (value) => tagline = value,
+                ),
               ],
             ),
           ),
@@ -170,7 +225,8 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
             ),
             TextButton(
               child: Text('Save'),
-              onPressed: () {
+              onPressed: () async {
+                await _saveProfile();
                 setState(() {});
                 Navigator.of(context).pop();
               },
@@ -189,6 +245,27 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
         _imageFile = pickedFile;
       });
     }
+  }
+
+  Future<void> _saveProfile() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final updatedUser = User(
+      id: user.id,
+      email: email,
+      name: name,
+      password: user.password,
+      telephone: phoneNumber,
+      description: tagline,
+      photo: _imageFile == null ? user.photo : _imageFile!.path,
+    );
+    await authService.updateUser(updatedUser);
+  }
+
+  void _logout() {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    authService.signOut().then((_) {
+      Navigator.of(context).pushReplacementNamed('/login');
+    });
   }
 }
 
@@ -237,13 +314,3 @@ class DetailTile extends StatelessWidget {
     );
   }
 }
-
-
-//InfoTile(
-              //   icon: Icons.email,
-              //   text: 'Iqbalr@gmail.com',
-              // ),
-              // InfoTile(
-              //   icon: Icons.phone,
-              //   text: '0895396789912',
-              // ),

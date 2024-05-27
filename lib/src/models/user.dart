@@ -1,11 +1,11 @@
 class User {
-  final String id;
-  final String name;
-  final String email;
-  final String password;
-  final String telephone;
-  final String description;
-  final String photo;
+  late String id;
+  late String name;
+  late String email;
+  late String password;
+  late String telephone;
+  late String description;
+  late String photo;
 
   User({
     required this.id, 

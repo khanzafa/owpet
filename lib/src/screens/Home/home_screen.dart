@@ -4,20 +4,33 @@ import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
 import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
 import 'package:owpet/src/screens/Profile/profile_user_screen.dart';
 import 'package:owpet/src/screens/Home/dashboard_screen.dart';
+import 'package:owpet/src/services/auth_service.dart';
+import 'package:owpet/src/models/user.dart';
+import 'package:provider/provider.dart';
 
 class MyHomeScreen extends StatefulWidget {
   @override
   _MyHomeScreenState createState() => _MyHomeScreenState();
 }
 
-class _MyHomeScreenState extends State<MyHomeScreen> with TickerProviderStateMixin {
+class _MyHomeScreenState extends State<MyHomeScreen>
+    with TickerProviderStateMixin {
   MotionTabBarController? _motionTabBarController;
+  User _currentUser = User(
+    id: '',
+    email: '',
+    name: '',
+    password: '',
+    telephone: '',
+    description: '',
+    photo: '',
+  );
 
-  static List<Widget> _widgetOptions = <Widget>[
-    DashboardScreen(),
-    MyPetsScreen(userId: 'qUtR4Sp5FAHyOpmxeD9l'),
-    ProfileUserScreen(),
-  ];
+  // List<Widget> _widgetOptions = <Widget>[
+  //   DashboardScreen(),
+  //   MyPetsScreen(userId: 'jzcaUv48fPgW73VfTkaO6mkzFTd2'),
+  //   ProfileUserScreen(user: _currentUser,),
+  // ];
 
   @override
   void initState() {
@@ -27,6 +40,8 @@ class _MyHomeScreenState extends State<MyHomeScreen> with TickerProviderStateMix
       length: 3,
       vsync: this,
     );
+    _fetchCurrentUser();
+    print("Current User: $_currentUser");
   }
 
   @override
@@ -35,13 +50,33 @@ class _MyHomeScreenState extends State<MyHomeScreen> with TickerProviderStateMix
     super.dispose();
   }
 
+  void _fetchCurrentUser() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final User user = await authService.getActiveUser();
+    setState(() {
+      _currentUser.id = user.id;
+      _currentUser.email = user.email;
+      _currentUser.name = user.name;
+      _currentUser.password = user.password;
+      _currentUser.telephone = user.telephone;
+      _currentUser.description = user.description;
+      _currentUser.photo = user.photo;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: _motionTabBarController,
-        children: _widgetOptions,
+        children: [
+          DashboardScreen(),
+          MyPetsScreen(userId: _currentUser.id),
+          ProfileUserScreen(
+            user: _currentUser,
+          ),
+        ],
       ),
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,

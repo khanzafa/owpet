@@ -20,7 +20,7 @@ class MyPetsScreen extends StatelessWidget {
 
   MyPetsScreen({required this.userId});
 
-  void _navigateToAddPetScreen(BuildContext context) {
+  void _navigateToAddPetScreen(BuildContext context) async {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddPetScreen()),
@@ -31,13 +31,43 @@ class MyPetsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8B80FF),      
+        // backgroundColor: Color(0xFF8B80FF),
         title: Text(
-          'Pets',
+          'Owpets - Hewan Peliharaan',
           style: GoogleFonts.jua(
-            fontSize: 24,            
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            // color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(41),
+          child: Container(
+            // color: Color(0xFF8B80FF), // Updated background color
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 352,
+                height: 41,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    hintStyle: TextStyle(
+                        color: Colors.black), // Updated hint text color
+                    prefixIcon: Icon(Icons.search,
+                        color: Colors.black), // Updated icon color
+                    filled: true,
+                    fillColor: Color(0xFF8B80FF),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -63,33 +93,33 @@ class MyPetsScreen extends StatelessWidget {
           //     ),
           //   ),
           // ),
-          Container(
-            color: Color(0xFF8B80FF), // Updated background color
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 352,
-                height: 41,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    hintStyle: TextStyle(
-                        color: Colors.black), // Updated hint text color
-                    prefixIcon: Icon(Icons.search,
-                        color: Colors.black), // Updated icon color
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: EdgeInsets.symmetric(vertical: 10),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
+          // Container(
+          //   color: Color(0xFF8B80FF), // Updated background color
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: SizedBox(
+          //       width: 352,
+          //       height: 41,
+          //       child: TextField(
+          //         decoration: InputDecoration(
+          //           hintText: 'Search...',
+          //           hintStyle: TextStyle(
+          //               color: Colors.black), // Updated hint text color
+          //           prefixIcon: Icon(Icons.search,
+          //               color: Colors.black), // Updated icon color
+          //           filled: true,
+          //           fillColor: Colors.white,
+          //           border: OutlineInputBorder(
+          //             borderRadius: BorderRadius.circular(20.0),
+          //             borderSide: BorderSide.none,
+          //           ),
+          //           contentPadding: EdgeInsets.symmetric(vertical: 10),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // SizedBox(height: 16),
           Expanded(
             child: FutureBuilder<List<Pet>>(
               future: petService.getMyPets(userId),
@@ -98,6 +128,17 @@ class MyPetsScreen extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data == null) {
+                  return Center(
+                      child: Text(
+                    textAlign: TextAlign.center,
+                    'Tidak ada hewan peliharaan yang ditemukan. Silakan tambahkan hewan peliharaan baru.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ));
                 } else {
                   List<Pet> myPets = snapshot.data ?? [];
                   return GridView.builder(
@@ -226,11 +267,10 @@ class MyPetsScreen extends StatelessWidget {
                       ),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: Image.network(
-                            pet.photoUrl ??
-                                "https://source.unsplash.com/random/?cat",
-                            fit: BoxFit.cover,
-                          )),
+                          child: pet.photoUrl == null
+                              ? Image.asset('assets/images/kucing.png')
+                              : Image.network(pet.photoUrl!,
+                                  fit: BoxFit.cover)),
                     ),
                     SizedBox(height: 8),
                     Row(

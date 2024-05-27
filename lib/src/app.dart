@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
+import 'package:owpet/src/screens/Login/login_screen.dart';
+import 'package:owpet/src/screens/Login/register_screen.dart';
 import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
 import 'package:owpet/src/screens/Makan/edit_meal_screen.dart';
 import 'package:owpet/src/screens/Home/home_screen.dart';
@@ -11,6 +14,8 @@ import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
+import 'package:provider/provider.dart';
+import 'package:owpet/src/services/auth_service.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -31,6 +36,7 @@ class MyApp extends StatelessWidget {
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          home: MyHomeScreen(),
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
@@ -86,15 +92,39 @@ class MyApp extends StatelessWidget {
           //   );
           // },
           routes: {            
-            '/': (context) => MyHomeScreen(),
+            '/home': (context) => MyHomeScreen(),
+            
+            
 
             // ROUTES FOR TESTING ONLY (KALIAN KALAU MAU SLICING GANTI INI SAMA SCREEN KALIAN)
             // '/': (context) => MealMonitoringScreen(petId: '2jwHq8GSHHxTgZ5orTeT'),
             // '/' : (context) => ForumScreen(),
             // '/' : (context) => MyPetsScreen(userId: 'qUtR4Sp5FAHyOpmxeD9l',),
             // '/' : (context) => AddPetScreen(),
+            '/register' : (context) => RegisterScreen(),
+            '/login' : (context) => LoginScreen(),
           },
         );
+      },
+    );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    return FutureBuilder<User>(
+      future: authService.getActiveUser(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasData) {
+          return MyHomeScreen();
+        } else {
+          return LoginScreen();
+        }
       },
     );
   }

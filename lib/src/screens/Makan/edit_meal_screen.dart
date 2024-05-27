@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:owpet/src/models/meal.dart';
 import 'package:owpet/src/services/meal_service.dart';
 
 class AddEditMealSchedulePage extends StatefulWidget {
@@ -171,14 +172,19 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
 
   void _addMealSchedule() {
     String mealType = _selectedMealType!;
-    double weight = double.parse(_weightController.text);
+    int weight = int.parse(_weightController.text);
     String time = _selectedTime.format(context);
+
+    Meal mealData = Meal(
+      id: '',
+      mealType: mealType,
+      weight: weight,
+      time: time,
+    );
 
     MealService().addMealSchedule(
       petId: widget.petId,
-      mealType: mealType,
-      weight: weight,
-      time: _selectedTime,
+      meal: mealData
     );
   }
 }
