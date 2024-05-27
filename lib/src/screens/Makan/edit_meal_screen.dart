@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:owpet/src/models/meal.dart';
 import 'package:owpet/src/services/meal_service.dart';
 
 class AddEditMealSchedulePage extends StatefulWidget {
@@ -85,37 +86,37 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Meal Type'),
-                value: _selectedMealType,
-                items: [
-                  DropdownMenuItem(
-                    value: 'Dry Food',
-                    child: Text('Dry Food'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Wet Food',
-                    child: Text('Wet Food'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Snack',
-                    child: Text('Snack'),
-                  ),
-                ],
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedMealType = newValue;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a meal type';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _selectedMealType = value;
-                },
-              ),
+                  decoration: InputDecoration(labelText: 'Meal Type'),
+                  value: _selectedMealType,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'Dry Food',
+                      child: Text('Dry Food'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Wet Food',
+                      child: Text('Wet Food'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Snack',
+                      child: Text('Snack'),
+                    ),
+                  ],
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedMealType = newValue;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a meal type';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _selectedMealType = value;
+                  },
+                ),
                 TextFormField(
                   controller: _weightController,
                   decoration: InputDecoration(labelText: 'Weight'),
@@ -133,7 +134,7 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
                       _selectedTime.format(context),
                     ),
                   ),
-                ),                
+                ),
               ],
             ),
           ),
@@ -171,14 +172,19 @@ class _AddEditMealSchedulePageState extends State<AddEditMealSchedulePage> {
 
   void _addMealSchedule() {
     String mealType = _selectedMealType!;
-    double weight = double.parse(_weightController.text);
+    int weight = int.parse(_weightController.text);
     String time = _selectedTime.format(context);
+
+    Meal mealData = Meal(
+      id: '',
+      mealType: mealType,
+      weight: weight,
+      time: time,
+    );
 
     MealService().addMealSchedule(
       petId: widget.petId,
-      mealType: mealType,
-      weight: weight,
-      time: _selectedTime,
+      meal: mealData
     );
   }
 }

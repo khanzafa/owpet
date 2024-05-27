@@ -1,21 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/add_profile.dart';
-import 'package:owpet/src/screens/detail_pet_screen.dart';
-import '../models/pet.dart';
-import '../services/pet_service.dart';
+import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
+import 'package:owpet/src/screens/Pets/detail_pet_screen.dart';
+import 'package:owpet/src/services/pet_service.dart';
+import 'package:owpet/src/models/pet.dart';
 
 class MyPetsScreen extends StatelessWidget {
   final String userId;
   final PetService petService = PetService();
-  final List<String> categories = ['All', 'Anjing', 'Kucing', 'Kelinci', 'Burung'];
+  final List<String> categories = [
+    'All',
+    'Anjing',
+    'Kucing',
+    'Kelinci',
+    'Burung'
+  ];
 
   MyPetsScreen({required this.userId});
 
-  void _navigateToAddPetScreen(BuildContext context) {
+  void _navigateToAddPetScreen(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddProfile()),
+      MaterialPageRoute(builder: (context) => AddPetScreen()),
     );
   }
 
@@ -23,39 +31,20 @@ class MyPetsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8B80FF),
+        // backgroundColor: Color(0xFF8B80FF),
         title: Text(
-          'Pets',
-          style: TextStyle(
-            fontFamily: 'Jua',
+          'Owpets - Hewan Peliharaan',
+          style: GoogleFonts.jua(
+            fontSize: 24,
             fontWeight: FontWeight.bold,
+            // color: Colors.white,
           ),
         ),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: Color(0xFF8B80FF), // Background color for the categories
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                height: 35, // Adjust the height as needed
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: buildCategoryButton(categories[index]),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-          Container(
-            color: Color(0xFF8B80FF), // Updated background color
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(41),
+          child: Container(
+            // color: Color(0xFF8B80FF), // Updated background color
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -64,10 +53,12 @@ class MyPetsScreen extends StatelessWidget {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search...',
-                    hintStyle: TextStyle(color: Colors.black), // Updated hint text color
-                    prefixIcon: Icon(Icons.search, color: Colors.black), // Updated icon color
+                    hintStyle: TextStyle(
+                        color: Colors.black), // Updated hint text color
+                    prefixIcon: Icon(Icons.search,
+                        color: Colors.black), // Updated icon color
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: Color(0xFF8B80FF),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       borderSide: BorderSide.none,
@@ -78,7 +69,57 @@ class MyPetsScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 16),
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Container(
+          //   color: Color(0xFF8B80FF), // Background color for the categories
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 16),
+          //     child: SizedBox(
+          //       height: 35, // Adjust the height as needed
+          //       child: ListView.builder(
+          //         scrollDirection: Axis.horizontal,
+          //         itemCount: categories.length,
+          //         itemBuilder: (context, index) {
+          //           return Padding(
+          //             padding: const EdgeInsets.symmetric(horizontal: 8),
+          //             child: buildCategoryButton(categories[index]),
+          //           );
+          //         },
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Container(
+          //   color: Color(0xFF8B80FF), // Updated background color
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: SizedBox(
+          //       width: 352,
+          //       height: 41,
+          //       child: TextField(
+          //         decoration: InputDecoration(
+          //           hintText: 'Search...',
+          //           hintStyle: TextStyle(
+          //               color: Colors.black), // Updated hint text color
+          //           prefixIcon: Icon(Icons.search,
+          //               color: Colors.black), // Updated icon color
+          //           filled: true,
+          //           fillColor: Colors.white,
+          //           border: OutlineInputBorder(
+          //             borderRadius: BorderRadius.circular(20.0),
+          //             borderSide: BorderSide.none,
+          //           ),
+          //           contentPadding: EdgeInsets.symmetric(vertical: 10),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // SizedBox(height: 16),
           Expanded(
             child: FutureBuilder<List<Pet>>(
               future: petService.getMyPets(userId),
@@ -87,6 +128,17 @@ class MyPetsScreen extends StatelessWidget {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data == null) {
+                  return Center(
+                      child: Text(
+                    textAlign: TextAlign.center,
+                    'Tidak ada hewan peliharaan yang ditemukan. Silakan tambahkan hewan peliharaan baru.',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ));
                 } else {
                   List<Pet> myPets = snapshot.data ?? [];
                   return GridView.builder(
@@ -136,7 +188,6 @@ class MyPetsScreen extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
-
 
   Widget buildCategoryButton(String category) {
     return FittedBox(
@@ -189,7 +240,7 @@ class MyPetsScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    pet.species,
+                    pet.species?.toUpperCase() ?? 'Unknown',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -215,12 +266,11 @@ class MyPetsScreen extends StatelessWidget {
                         ),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.asset(
-                          'assets/images/flutter_logo.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(15),
+                          child: pet.photoUrl == null
+                              ? Image.asset('assets/images/kucing.png')
+                              : Image.network(pet.photoUrl!,
+                                  fit: BoxFit.cover)),
                     ),
                     SizedBox(height: 8),
                     Row(
@@ -238,8 +288,10 @@ class MyPetsScreen extends StatelessWidget {
                         ),
                         SizedBox(width: 4),
                         Icon(
-                          pet.gender == 'Male' ? Icons.male : Icons.female,
-                          color: pet.gender == 'Male' ? Colors.blue : Colors.pink,
+                          pet.gender == 'Jantan' ? Icons.male : Icons.female,
+                          color: pet.gender == 'Betina'
+                              ? Colors.blue
+                              : Colors.pink,
                         ),
                       ],
                     ),

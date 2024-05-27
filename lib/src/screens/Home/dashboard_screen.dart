@@ -2,20 +2,52 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:owpet/src/screens/my_pets_screen.dart';
-
-import 'profile_user_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
+import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
+import 'package:owpet/src/screens/Artikel/list_article_screen.dart';
+import 'package:owpet/src/screens/Dokter/list_doctor.dart';
 
 Widget _buildGridItem(String title, IconData icon, BuildContext context) {
   return Card(
-    color: Colors.deepPurple[100], // Use color that matches design
+    color: Color.fromRGBO(139, 128, 255, 1),
     shape: RoundedRectangleBorder(
       borderRadius:
           BorderRadius.circular(15), // Rounded corners like in the design
     ),
     child: InkWell(
       onTap: () {
-        // Handle your onTap action here
+        if (title == 'Perawatan') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => MyPetsScreen()),
+          // );
+        } else if (title == 'Makan') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
+          // );
+        } else if (title == 'Kesehatan') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
+          // );
+        } else if (title == 'Artikel') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ArtikelPage()),
+          );
+        } else if (title == 'Dokter') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DoctorListPage()),
+          );
+        } else if (title == 'Komunitas') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForumScreen()),
+          );
+        }
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,9 +58,13 @@ Widget _buildGridItem(String title, IconData icon, BuildContext context) {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.deepPurple, // Text color that matches the design
-              fontWeight: FontWeight.bold, // Bold text like in the design
+            // style: TextStyle(
+            //   color: Colors.deepPurple, // Text color that matches the design
+            //   fontWeight: FontWeight.bold, // Bold text like in the design
+            // ),
+            style: GoogleFonts.jua(
+              textStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -36,7 +72,6 @@ Widget _buildGridItem(String title, IconData icon, BuildContext context) {
     ),
   );
 }
-
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -55,16 +90,19 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(30),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 10, vertical: 20
+              ),
               child: Stack(
                 clipBehavior: Clip.none, // Allow overflow
                 children: [
                   Container(
-                    width: 350,
-                    height: 160, // Fixed width for the container
+                    width: 360,
+                    height: 150, // Fixed width for the container
                     padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.only(top: 30),
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                      color: Color.fromRGBO(139, 128, 255, 1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -74,17 +112,24 @@ class DashboardScreen extends StatelessWidget {
                           width: 190, // Width constraint for the "Welcome" text
                           child: Text(
                             'Welcome',
-                            style: TextStyle(color: Colors.white, fontSize: 32),
+                            // style: TextStyle(color: Colors.white, fontSize: 32),
+                            style: GoogleFonts.jua(
+                              textStyle:
+                                  TextStyle(color: Colors.white, fontSize: 34),
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         SizedBox(
                           width:
-                              120, // Apply similar width constraints for uniformity
+                              160, // Apply similar width constraints for uniformity
                           child: Text(
                             'Yuk, Pantau Aktivitas Pets Kita',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-
+                            // style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: GoogleFonts.jua(
+                              textStyle:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
                           ),
                         ),
                       ],
@@ -92,7 +137,7 @@ class DashboardScreen extends StatelessWidget {
                   ),
                   Positioned(
                     right: -10, // Adjust position to fit the design
-                    top: 2,
+                    top: 15,
                     child: Image.asset(
                       'assets/images/anjing.png',
                       width: 185,
@@ -114,7 +159,7 @@ class DashboardScreen extends StatelessWidget {
                 _buildGridItem('Kesehatan', Icons.local_hospital, context),
                 _buildGridItem('Artikel', Icons.article, context),
                 _buildGridItem('Dokter', Icons.medical_services, context),
-                _buildGridItem('Pelaporan', Icons.assessment, context),
+                _buildGridItem('Komunitas', Icons.people, context),
               ],
             ),
             SizedBox(height: 20),

@@ -11,7 +11,7 @@ environment:
 
 dependencies:
   cloud_firestore: ^4.17.2
-  firebase_core: ^2.30.0
+  firebase_core: ^2.31.1
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -19,7 +19,15 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.1.1
   sqflite: ^2.3.3
-  intl: ^0.18.1
+  intl: ^0.19.0
+  file_picker: ^8.0.3
+  firebase_storage: ^11.7.6
+  carousel_slider: ^4.2.1
+  share: ^2.0.4
+  share_plus: ^9.0.0
+  motion_tab_bar_v2: ^0.3.0
+  firebase_auth: ^4.19.6
+  provider: ^6.1.2
   flutter_calendar_carousel: ^2.4.3
 
 dev_dependencies:
