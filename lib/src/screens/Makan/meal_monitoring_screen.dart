@@ -165,10 +165,10 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                                     side: BorderSide(color: Colors.transparent),                                    
                                     value: meal['status'],
                                     onChanged: (value) {
-                                      _updateMealStatus(meal.id, value!);
-                                      // setState(() {
-                                      //   _updateMealStatus(meal.id, value!);
-                                      // });
+                                      // _updateMealStatus(meal.id, value!);
+                                      setState(() {
+                                        _updateMealStatus(meal.id, value!);
+                                      });
                                     },
                                   )),
                             ),
@@ -200,110 +200,80 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
     );
   }
 
-  // Widget buildDayCheckboxes() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     children: List.generate(_selectedWeek.length, (index) {
-  //       final day = _selectedWeek[index];
-  //       return Row(
-  //         children: [
-  //           // Text('${day.day}/${day.month}'),
-  //           Checkbox(
-  //             value: false, // Replace with actual logic if needed
-  //             onChanged: (bool? value) {
-  //               setState(() {
-  //                 // Handle checkbox state change if necessary
-  //               });
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     }),
-  //   );
-  // }
-
   Widget buildDayCheckboxes(List<DateTime> selectedWeek) {
-    return Column(
+  return Column(
+    children: [
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Text(
+          'Monitoring Bulan ke-$_selectedMonth',
+          textAlign: TextAlign.start,
+          style: GoogleFonts.jua(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF8B80FF),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(selectedWeek.length, (index) {
+            final day = selectedWeek[index];
+            final dateString = '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+
+            return StreamBuilder<List<DocumentSnapshot>>(
+              stream: _mealService.getMealProgress(widget.petId, dateString),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData || snapshot.data!.isEmpty) {
+                  return _buildCheckboxColumn(Icons.close, day.day);
+                }
+
+                return StreamBuilder<DocumentSnapshot>(
+                  stream: _mealService.getProgressStatus(widget.petId, dateString),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
+                      return _buildCheckboxColumn(Icons.close, day.day);
+                    }
+
+                    final data = snapshot.data!.data() as Map<String, dynamic>;
+                    final allCompleted = data['isCompleted'] as bool;
+                    return _buildCheckboxColumn(allCompleted ? Icons.check : Icons.close, day.day);
+                  },
+                );
+              },
+            );
+          }),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildCheckboxColumn(IconData iconData, int day) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+    child: Stack(
       children: [
         Container(
-          alignment: Alignment.centerLeft,
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            'Monitoring Bulan ke-$_selectedMonth',
-            textAlign: TextAlign.start,
-            style: GoogleFonts.jua(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Container(
           decoration: BoxDecoration(
-            color: Color(0xFF8B80FF),
-            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5),
           ),
-          margin: EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(selectedWeek.length, (index) {
-              final day = selectedWeek[index];
-              final dateString =
-                  '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
-
-              return StreamBuilder<List<DocumentSnapshot>>(
-                stream: _mealService.getMealProgress(widget.petId, dateString),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Column(
-                      children: [
-                        Checkbox(
-                          value: false,
-                          onChanged: null,
-                          side: BorderSide(color: Colors.white),
-                          fillColor: MaterialStateProperty.all(Colors.white),
-                        ),
-                        Text('${day.day}'),
-                      ],
-                    );
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Column(
-                      children: [
-                        Checkbox(
-                          value: false,
-                          onChanged: null,
-                          side: BorderSide(color: Colors.white),
-                          fillColor: MaterialStateProperty.all(Colors.white),
-                        ),
-                        Text('${day.day}'),
-                      ],
-                    );
-                  }
-
-                  final mealProgress = snapshot.data!;
-                  bool allCompleted =
-                      mealProgress.every((meal) => meal['status'] == true);
-
-                  return Column(
-                    children: [
-                      Checkbox(
-                        side: BorderSide(color: Colors.white),
-                        value: allCompleted,
-                        onChanged: null,
-                        fillColor: MaterialStateProperty.all(Colors.white),
-                      ),
-                      Text('${day.day}'),
-                    ],
-                  );
-                },
-              );
-            }),
-          ),
-        ),
+          padding: EdgeInsets.all(5),
+          child: Icon(iconData, color: Color(0xFF8B80FF)),
+        ),        
+        Text('$day', style: GoogleFonts.jua(color: Colors.grey[800], fontSize: 10),),
       ],
-    );
-  }
+    ),
+  );
+}
+
+
 
   Widget buildReminderCard() {
     return Container(
