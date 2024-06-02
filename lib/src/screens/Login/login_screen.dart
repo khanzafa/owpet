@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:owpet/src/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -12,9 +13,41 @@ class LoginScreen extends StatelessWidget {
 
     // Gantikan URL dan tambahkan logika koneksi API di sini
     print('Login dengan Email: $email, Password: $password');
-    await AuthService().login(email, password);
-    Navigator.pushNamed(context, '/home');
+    final result = await context.read<AuthService>().login(email, password);
+    if (result == 'Success') {
+      Navigator.pushNamed(context, '/home');
+    } else {
+      _showMyDialog(context, result);
+    }
+    // Navigator.pushNamed(context, '/home');
   }
+
+  Future<void> _showMyDialog(BuildContext context, String message) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Login Failed'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(message),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {

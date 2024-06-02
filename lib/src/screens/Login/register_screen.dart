@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:owpet/src/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -14,7 +15,7 @@ class RegisterScreen extends StatelessWidget {
 
     // Gantikan URL dan tambahkan logika koneksi API di sini
     print('Register dengan Email: $email, Nama: $name, Password: $password');
-    await AuthService().register(email, password, name);
+    await context.read<AuthService>().register(email, password, name);
     Navigator.pushNamed(context, '/login');
   }
 

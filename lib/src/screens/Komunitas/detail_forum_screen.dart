@@ -8,10 +8,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ForumDetailScreen extends StatefulWidget {
+  final User activeUser;
   final Forum forum;
   final Color color;
 
-  ForumDetailScreen({required this.forum, required this.color});
+  ForumDetailScreen({required this.forum, required this.color, required this.activeUser});
 
   @override
   _ForumDetailScreenState createState() => _ForumDetailScreenState();
@@ -19,7 +20,7 @@ class ForumDetailScreen extends StatefulWidget {
 
 class _ForumDetailScreenState extends State<ForumDetailScreen> {
   late Forum _forum;
-  late User _activeUser;
+  late User _activeUser = widget.activeUser;
   late List<Comment> _comments;
   late TextEditingController _commentController;
 
@@ -27,15 +28,6 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
   void initState() {
     super.initState();
     _forum = widget.forum;
-    _activeUser = User(
-      id: 'qUtR4Sp5FAHyOpmxeD9l',
-      name: 'User 1',
-      email: 'example@gmail.com',
-      password: 'password',
-      telephone: '08123456789',
-      description: 'Description',
-      photo: 'https://source.unsplash.com/random/?person',
-    );
     _comments = [];
     _commentController = TextEditingController();
     _getComments();
@@ -239,10 +231,17 @@ Join the discussion on Owpet App!
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(_forum.user.photo),
-                    ),
+                    leading: _forum.user.photo != null
+                        ? CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(_forum.user.photo??
+                                'https://source.unsplash.com/random/?person'),
+                          )
+                        : null,
+                    // leading: CircleAvatar(
+                    //   radius: 20,
+                    //   backgroundImage: NetworkImage(_forum.user.photo),
+                    // ),
                     title: Text(_forum.user.name, style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,                    
                     )),
@@ -401,10 +400,17 @@ Join the discussion on Owpet App!
                     children: [
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(comment.user.photo),
-                        ),
+                        leading: comment.user.photo != null
+                            ? CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(comment.user.photo??
+                                    'https://source.unsplash.com/random/?person'),
+                              )
+                            : null,
+                        // leading: CircleAvatar(
+                        //   radius: 20,
+                        //   backgroundImage: NetworkImage(comment.user.photo),
+                        // ),
                         title: Text(
                           comment.user.name,
                           // style: TextStyle(

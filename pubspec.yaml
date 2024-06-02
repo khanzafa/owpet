@@ -29,12 +29,19 @@ dependencies:
   firebase_auth: ^4.19.6
   provider: ^6.1.2
   flutter_calendar_carousel: ^2.4.3
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^3.0.0
+
+flutter_icons:
+  image_path: assets/images/logo.png
+  android: true
+  ios: true
+  adaptive_icon_background: "#00FFFFFF"
 
 flutter:
   uses-material-design: true

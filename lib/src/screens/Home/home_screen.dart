@@ -9,6 +9,10 @@ import 'package:owpet/src/models/user.dart';
 import 'package:provider/provider.dart';
 
 class MyHomeScreen extends StatefulWidget {
+  final User user;
+
+  const MyHomeScreen({Key? key, required this.user}) : super(key: key);
+
   @override
   _MyHomeScreenState createState() => _MyHomeScreenState();
 }
@@ -40,7 +44,6 @@ class _MyHomeScreenState extends State<MyHomeScreen>
       length: 3,
       vsync: this,
     );
-    _fetchCurrentUser();
     print("Current User: $_currentUser");
   }
 
@@ -50,27 +53,35 @@ class _MyHomeScreenState extends State<MyHomeScreen>
     super.dispose();
   }
 
-  void _fetchCurrentUser() async {
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final User? user = await authService.getActiveUser();
-    if (user != null) {
-      setState(() {
-        _currentUser = user;
-      });
-    }
-  }
+//   @override
+// void didChangeDependencies() {
+//   super.didChangeDependencies();
+//   _fetchCurrentUser();
+// }
+
+  // void _fetchCurrentUser() async {
+  //   final authService = Provider.of<AuthService>(context, listen: false);
+  //   final user = context.watch<User?>();
+  //   if (user != null) {
+  //     setState(() {
+  //       _currentUser = user;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // final authService = Provider.of<AuthService>(context, listen: false);
+    // final user = context.watch<User>();
     return Scaffold(
       body: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: _motionTabBarController,
         children: [
-          DashboardScreen(),
-          MyPetsScreen(userId: _currentUser.id),
+          DashboardScreen(user: widget.user),
+          MyPetsScreen(user: widget.user),
           ProfileUserScreen(
-            user: _currentUser,
+            user: widget.user,
           ),
         ],
       ),

@@ -6,12 +6,16 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddPetScreen extends StatefulWidget {
+  late String userId;
+
+  AddPetScreen({required this.userId});
+
   @override
   _AddPetScreenState createState() => _AddPetScreenState();
 }
 
 class _AddPetScreenState extends State<AddPetScreen> {
-  final String userId = 'qUtR4Sp5FAHyOpmxeD9l';
+  late String userId = '';
   final PetService petService = PetService();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -55,6 +59,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

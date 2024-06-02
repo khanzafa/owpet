@@ -87,10 +87,17 @@ class _AddForumScreenState extends State<AddForumScreen> {
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(activeUser.photo),
-              ),
+              leading: activeUser.photo != null
+                  ? CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(activeUser.photo??
+                          'https://source.unsplash.com/random/?person'),
+                    )
+                  : null,
+              // leading: CircleAvatar(
+              //   radius: 20,
+              //   backgroundImage: NetworkImage(activeUser.photo),
+              // ),
               title: Text(activeUser.name),
             ),
             _imageAttachments.isNotEmpty

@@ -3,29 +3,29 @@ class User {
   late String name;
   late String email;
   late String password;
-  late String telephone;
-  late String description;
-  late String photo;
+  late String? telephone;
+  late String? description;
+  late String? photo;
 
   User({
     required this.id, 
     required this.name, 
     required this.email, 
     required this.password,
-    required this.telephone,
-    required this.description,
-    required this.photo,
+    this.telephone,
+    this.description,
+    this.photo,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      telephone: json['telephone'],
-      description: json['description'],
-      photo: json['photo'],
+      id: json['id']??'',
+      name: json['name']??'',
+      email: json['email']??'',
+      password: json['password']??'',
+      telephone: json['telephone']??'',
+      description: json['description']??'',
+      photo: json['photo']??'',
     );
   }
 

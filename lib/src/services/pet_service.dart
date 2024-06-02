@@ -17,6 +17,12 @@ class PetService {
           .doc(userId)
           .collection('pets')
           .get();
+
+      // if (snapshot.docs.isEmpty) {
+      //   await addDummyPets(userId);
+      //   return [];
+      // }
+      
       final pets = snapshot.docs
           .map((doc) => Pet.fromJson({'id': doc.id, ...doc.data()}))
           .toList();

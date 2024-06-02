@@ -6,7 +6,9 @@ import 'package:owpet/src/models/forum.dart';
 import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/add_forum_screen.dart';
 import 'package:owpet/src/screens/Komunitas/detail_forum_screen.dart';
+import 'package:owpet/src/services/auth_service.dart';
 import 'package:owpet/src/services/forum_service.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ForumScreen extends StatefulWidget {
@@ -83,14 +85,24 @@ class _ForumScreenState extends State<ForumScreen> {
   // ];
   List<Forum> forums = [];
   // Data Dummy activeUser
+  // User activeUser = User(
+  //   id: 'qUtR4Sp5FAHyOpmxeD9l',
+  //   name: 'User 1',
+  //   email: 'example@gmail.com',
+  //   password: 'password',
+  //   telephone: '08123456789',
+  //   description: 'Description',
+  //   photo: 'https://source.unsplash.com/random/?person',
+  // );
+
   User activeUser = User(
-    id: 'qUtR4Sp5FAHyOpmxeD9l',
-    name: 'User 1',
-    email: 'example@gmail.com',
-    password: 'password',
-    telephone: '08123456789',
-    description: 'Description',
-    photo: 'https://source.unsplash.com/random/?person',
+    id: '',
+    name: '',
+    email: '',
+    password: '',
+    telephone: '',
+    description: '',
+    photo: '',
   );
 
   // Filter forum saya
@@ -102,6 +114,17 @@ class _ForumScreenState extends State<ForumScreen> {
     print("initState bosss");
     super.initState();
     getForums();
+    _fetchCurrentUser();
+  }
+
+  void _fetchCurrentUser() async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final user = context.watch<User?>();
+    if (user != null) {
+      setState(() {
+        activeUser = user;
+      });
+    }
   }
 
   @override
@@ -181,7 +204,7 @@ class _ForumScreenState extends State<ForumScreen> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              ForumDetailScreen(forum: forum, color: cardColor)),
+              ForumDetailScreen(forum: forum, color: cardColor, activeUser: activeUser,)),
     );
     getForums();
   }
@@ -276,10 +299,21 @@ Join the discussion on Owpet App!
                         children: [
                           ListTile(
                             contentPadding: EdgeInsets.zero,
-                            leading: CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(forum.user.photo),
-                            ),
+                            leading: forum.user.photo?.isNotEmpty == true
+                                ? CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage(forum
+                                            .user.photo ??
+                                        'https://source.unsplash.com/random/?person'),
+                                  )
+                                : CircleAvatar(
+                                    radius: 20,
+                                    child: Icon(Icons.person),
+                                  ),
+                            // leading: CircleAvatar(
+                            //   radius: 20,
+                            //   backgroundImage: NetworkImage(forum.user.photo),
+                            // ),
                             title: Text(
                               forum.user.name,
                               style: GoogleFonts.poppins(
@@ -403,10 +437,21 @@ Join the discussion on Owpet App!
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(myForum.user.photo),
-                          ),
+                          leading: myForum.user.photo?.isNotEmpty == true
+                              ? CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(myForum
+                                          .user.photo ??
+                                      'https://source.unsplash.com/random/?person'),
+                                )
+                              : CircleAvatar(
+                                  radius: 20,
+                                  child: Icon(Icons.person),
+                                ),
+                          // leading: CircleAvatar(
+                          //   radius: 20,
+                          //   backgroundImage: NetworkImage(myForum.user.photo),
+                          // ),
                           title: Text(
                             myForum.user.name,
                             style: GoogleFonts.poppins(

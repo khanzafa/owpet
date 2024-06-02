@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 import 'package:owpet/src/screens/add_profile.dart';
 import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
 import 'package:owpet/src/screens/Pets/detail_pet_screen.dart';
 import 'package:owpet/src/services/pet_service.dart';
 import 'package:owpet/src/models/pet.dart';
 
-class MyPetsScreen extends StatelessWidget {
+class MealChoicePetScreen extends StatelessWidget {
   final String userId;
   final PetService petService = PetService();
   final List<String> categories = [
@@ -18,12 +19,14 @@ class MyPetsScreen extends StatelessWidget {
     'Burung'
   ];
 
-  MyPetsScreen({required this.userId});
+  MealChoicePetScreen({required this.userId});
 
   void _navigateToAddPetScreen(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPetScreen()),
+      MaterialPageRoute(builder: (context) => AddPetScreen(
+        userId: userId,
+      )),
     );
   }
 
@@ -157,7 +160,7 @@ class MyPetsScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => PetDetailScreen(userId: userId, pet: pet),
+                              builder: (context) => MealMonitoringScreen(petId: pet.id!),
                             ),
                           );
                         },

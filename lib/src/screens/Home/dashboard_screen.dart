@@ -3,77 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
+import 'package:owpet/src/screens/Makan/meal_choice_pet.dart';
 import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
 import 'package:owpet/src/screens/Artikel/list_article_screen.dart';
 import 'package:owpet/src/screens/Dokter/list_doctor.dart';
 
-Widget _buildGridItem(String title, IconData icon, BuildContext context) {
-  return Card(
-    color: Color.fromRGBO(139, 128, 255, 1),
-    shape: RoundedRectangleBorder(
-      borderRadius:
-          BorderRadius.circular(15), // Rounded corners like in the design
-    ),
-    child: InkWell(
-      onTap: () {
-        if (title == 'Perawatan') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => MyPetsScreen()),
-          // );
-        } else if (title == 'Makan') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-          // );
-        } else if (title == 'Kesehatan') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-          // );
-        } else if (title == 'Artikel') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ArtikelPage()),
-          );
-        } else if (title == 'Dokter') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DoctorListPage()),
-          );
-        } else if (title == 'Komunitas') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ForumScreen()),
-          );
-        }
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(icon,
-              size: 30, color: Colors.deepPurple), // Use custom icons or color
-          SizedBox(height: 8), // Space between icon and text
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            // style: TextStyle(
-            //   color: Colors.deepPurple, // Text color that matches the design
-            //   fontWeight: FontWeight.bold, // Bold text like in the design
-            // ),
-            style: GoogleFonts.jua(
-              textStyle:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
 class DashboardScreen extends StatelessWidget {
+  final User user;
+
+  DashboardScreen({required this.user});
+
   @override
   Widget build(BuildContext context) {
     final List<ChartData> chartData = [
@@ -181,6 +122,71 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildGridItem(String title, IconData icon, BuildContext context) {
+  return Card(
+    color: Color.fromRGBO(139, 128, 255, 1),
+    shape: RoundedRectangleBorder(
+      borderRadius:
+          BorderRadius.circular(15), // Rounded corners like in the design
+    ),
+    child: InkWell(
+      onTap: () {
+        if (title == 'Perawatan') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => MyPetsScreen()),
+          // );
+        } else if (title == 'Makan') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MealChoicePetScreen(userId: user.id)),
+          );
+        } else if (title == 'Kesehatan') {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
+          // );
+        } else if (title == 'Artikel') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ArtikelPage()),
+          );
+        } else if (title == 'Dokter') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DoctorListPage()),
+          );
+        } else if (title == 'Komunitas') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForumScreen()),
+          );
+        }
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(icon,
+              size: 30, color: Colors.deepPurple), // Use custom icons or color
+          SizedBox(height: 8), // Space between icon and text
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            // style: TextStyle(
+            //   color: Colors.deepPurple, // Text color that matches the design
+            //   fontWeight: FontWeight.bold, // Bold text like in the design
+            // ),
+            style: GoogleFonts.jua(
+              textStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 }
 
 class ChartData {
