@@ -262,7 +262,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                           side: BorderSide(color: Colors.white),
                           fillColor: MaterialStateProperty.all(Colors.white),
                         ),
-                        // Text('${day.day}/${day.month}'),
+                        Text('${day.day}'),
                       ],
                     );
                   }
@@ -276,7 +276,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                           side: BorderSide(color: Colors.white),
                           fillColor: MaterialStateProperty.all(Colors.white),
                         ),
-                        // Text('${day.day}/${day.month}'),
+                        Text('${day.day}'),
                       ],
                     );
                   }
@@ -293,7 +293,7 @@ class _MealMonitoringScreenState extends State<MealMonitoringScreen> {
                         onChanged: null,
                         fillColor: MaterialStateProperty.all(Colors.white),
                       ),
-                      // Text('${day.day}/${day.month}'),
+                      Text('${day.day}'),
                     ],
                   );
                 },

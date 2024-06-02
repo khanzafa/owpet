@@ -111,7 +111,7 @@ class _ForumScreenState extends State<ForumScreen> {
 
   // Filter forum saya
   List<Forum> get myForums =>
-      forums.where((forum) => forum.user.id == activeUser.id).toList();
+      forums.where((forum) => forum.user.id == widget.user.id).toList();
 
   @override
   void initState() {
@@ -166,14 +166,14 @@ class _ForumScreenState extends State<ForumScreen> {
         return;
       }
 
-      if (activeUser == null ||
-          activeUser.id == null ||
-          activeUser.id.isEmpty) {
-        print("Error: activeUser or activeUser.id is null or empty");
+      if (widget.user == null ||
+          widget.user.id == null ||
+          widget.user.id.isEmpty) {
+        print("Error: widget.user or widget.user.id is null or empty");
         return;
       }
 
-      await ForumService().likeForum(forumId, activeUser);
+      await ForumService().likeForum(forumId, widget.user);
       await getForums();
     } catch (e) {
       print('Error liking forum: $e');
@@ -211,7 +211,7 @@ class _ForumScreenState extends State<ForumScreen> {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              ForumDetailScreen(forum: forum, color: cardColor, activeUser: activeUser,)),
+              ForumDetailScreen(forum: forum, color: cardColor, activeUser: widget.user,)),
     );
     getForums();
   }

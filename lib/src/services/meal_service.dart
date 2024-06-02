@@ -224,6 +224,11 @@ class MealService {
       throw e;
     }
   }
+
+  double calculateCompletionRate(List<bool> taskProgress) {
+    int completedTasks = taskProgress.where((task) => task).length;
+    return (completedTasks / taskProgress.length) * 100;
+  }
 }
 
 
