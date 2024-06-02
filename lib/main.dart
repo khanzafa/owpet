@@ -50,9 +50,6 @@ void main() async {
     Provider<MealService>(
       create: (_) => MealService(),
     ),
-    // Provider<GroomingService>(
-    //   create: (_) => GroomingService(),
-    // ),
     Provider<ForumService>(
       create: (_) => ForumService(),
     ),
@@ -69,23 +66,4 @@ void main() async {
     ),
     ChangeNotifierProvider(create: (_) => SearchProvider()),
   ], child: MyApp(settingsController: settingsController)));
-  // runApp(ChangeNotifierProvider<AuthService>(
-  //     create: (context) => AuthService(),
-  //     child: MyApp()));
-  // runApp(
-  //   MultiProvider(
-  // providers: [
-  //   Provider<AuthService>(
-  //     create: (_) => AuthService(),
-  //   ),
-  //   StreamProvider(
-  //     create: (context) => context.read<AuthService>().authStateChanges,
-  //     initialData: null,
-  //   ),
-  // ],
-  //     child: MaterialApp(
-  //       home: AuthWrapper(),
-  //     ),
-  //   )
-  // );
 }

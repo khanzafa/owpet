@@ -7,21 +7,25 @@ import 'package:owpet/src/models/forum.dart';
 import 'package:owpet/src/services/forum_service.dart';
 
 class AddForumScreen extends StatefulWidget {
+  final User user;
+
+  AddForumScreen({required this.user});
+
   @override
   _AddForumScreenState createState() => _AddForumScreenState();
 }
 
 class _AddForumScreenState extends State<AddForumScreen> {
-  // Data Dummy activeUser
-  User activeUser = User(
-    id: '1',
-    name: 'User 1',
-    email: 'example@gmail.com',
-    password: 'password',
-    telephone: '08123456789',
-    description: 'Description',
-    photo: 'https://source.unsplash.com/random/?person',
-  );
+  // Data Dummy widget.user
+  // User widget.user = User(
+  //   id: '1',
+  //   name: 'User 1',
+  //   email: 'example@gmail.com',
+  //   password: 'password',
+  //   telephone: '08123456789',
+  //   description: 'Description',
+  //   photo: 'https://source.unsplash.com/random/?person',
+  // );
 
   TextEditingController _descriptionController = TextEditingController();
   List<String> _imageAttachments = [];
@@ -47,7 +51,7 @@ class _AddForumScreenState extends State<AddForumScreen> {
     final _imageAttachmentsURL = <String>[];
     for (String imagePath in _imageAttachments) {
       try {
-        final url = await ForumService().uploadImage(activeUser.id, imagePath);
+        final url = await ForumService().uploadImage(widget.user.id, imagePath);
         _imageAttachmentsURL.add(url);
       } catch (e) {
         print('Error uploading image: $e');
@@ -60,7 +64,7 @@ class _AddForumScreenState extends State<AddForumScreen> {
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       description: _descriptionController.text,
       images: _imageAttachmentsURL,
-      user: activeUser,
+      user: widget.user,
       createdAt: DateTime.now().toIso8601String(),
     );
 
@@ -87,18 +91,18 @@ class _AddForumScreenState extends State<AddForumScreen> {
           children: [
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: activeUser.photo != null
+              leading: widget.user.photo != null
                   ? CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(activeUser.photo??
+                      backgroundImage: NetworkImage(widget.user.photo??
                           'https://source.unsplash.com/random/?person'),
                     )
                   : null,
               // leading: CircleAvatar(
               //   radius: 20,
-              //   backgroundImage: NetworkImage(activeUser.photo),
+              //   backgroundImage: NetworkImage(widget.user.photo),
               // ),
-              title: Text(activeUser.name),
+              title: Text(widget.user.name),
             ),
             _imageAttachments.isNotEmpty
                 ? Row(

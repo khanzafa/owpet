@@ -12,6 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ForumScreen extends StatefulWidget {
+  final User user;
+
+  ForumScreen({required this.user});
+
   @override
   _ForumScreenState createState() => _ForumScreenState();
 }
@@ -111,27 +115,30 @@ class _ForumScreenState extends State<ForumScreen> {
 
   @override
   void initState() {
-    print("initState bosss");
     super.initState();
-    getForums();
     _fetchCurrentUser();
   }
 
   void _fetchCurrentUser() async {
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final user = context.watch<User?>();
-    if (user != null) {
-      setState(() {
-        activeUser = user;
-      });
-    }
+    // Delay the fetching of the active user until after the initialization process is completed
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final user = context.read<User?>();
+      if (user != null) {
+        setState(() {
+          activeUser = user;
+        });
+        // After fetching the active user, retrieve the forums data
+        getForums();
+      }
+    });
   }
 
-  @override
-  void didUpdateWidget(covariant ForumScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    getForums();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   getForums();
+  // }
 
   @override
   void dispose() {
@@ -147,7 +154,7 @@ class _ForumScreenState extends State<ForumScreen> {
       });
     } catch (e) {
       print('Error getting forums: $e');
-      // Lakukan penanganan kesalahan yang sesuai
+      throw e;
     }
   }
 
@@ -564,7 +571,7 @@ Join the discussion on Owpet App!
             // Contoh: Navigasi ke halaman tambah forum baru
             await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddForumScreen()),
+              MaterialPageRoute(builder: (context) => AddForumScreen(user: widget.user)),
             );
           },
           tooltip: 'Tambah Forum',

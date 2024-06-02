@@ -140,7 +140,7 @@ class DashboardScreen extends StatelessWidget {
         } else if (title == 'Makan') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MealChoicePetScreen(userId: user.id)),
+            MaterialPageRoute(builder: (context) => MealChoicePetScreen(user: user)),
           );
         } else if (title == 'Kesehatan') {
           // Navigator.push(
@@ -150,7 +150,7 @@ class DashboardScreen extends StatelessWidget {
         } else if (title == 'Artikel') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ArtikelPage()),
+            MaterialPageRoute(builder: (context) => ArtikelPage(user: user,)),
           );
         } else if (title == 'Dokter') {
           Navigator.push(
@@ -160,7 +160,7 @@ class DashboardScreen extends StatelessWidget {
         } else if (title == 'Komunitas') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ForumScreen()),
+            MaterialPageRoute(builder: (context) => ForumScreen(user: user,)),
           );
         }
       },

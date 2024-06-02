@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:owpet/src/models/article.dart';
+import 'package:owpet/src/models/user.dart';
+import 'package:owpet/src/services/article_service.dart';
 import 'detail_article_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ArtikelPage(),
-    );
-  }
-}
-
 class ArtikelPage extends StatefulWidget {
+  final User user;
+
+  ArtikelPage({required this.user});
+
   @override
   _ArtikelPageState createState() => _ArtikelPageState();
 }
 
 class _ArtikelPageState extends State<ArtikelPage> {
-  List<Artikel> artikelList = List.generate(
-    20,
-    (index) => Artikel(
-      imageUrl: 'https://i.pinimg.com/736x/22/d1/9d/22d19d00a4868397cbc09f6e3f763bfd.jpg',
-      title: 'Kucing Anda Sedang Berahi:',
-      subtitle: 'Yang Perlu Anda Ketahui',
-      description: 'Jika kucing Anda sedang kepanasan, Anda pasti akan melupakan lolongannya dan permintaan perhatian yang terus-menerus. Jika kucing Anda tidak bisa kawin, panasnya akan menjadi sesuatu yang membuat Anda berdua frustasi dan tidak nyaman. Jika kucing Anda bisa kawin, Anda harus bersiap menghadapi kemungkinan melahirkan dua anak kucing dalam setahun Kecuali jika Anda berencana untuk beternak, perawatan kucing terbaik adalah menadulkannya. Ini akan lebih mudah bagi Anda dan juga lebih mudah bagi Anda. Saat kucing Anda sedang "berahi", ia berada dalam masa subur dalam siklus reproduksinya dan sedang mencari pasangan. Seekor kucing biasanya akan mengalami berahi pada musim semi dan musim gugur dan panas ini dapat berlangsung dari beberapa hari hingga beberapa minggu. Seekor kucing biasanya mengalami panas pertama pada usia sekitar 6 bulan, tetapi ada juga yang mengalami panas pertama pada usia 4 bulan. Saat cuaca panas, kucing Anda mungkin lebih penuh kasih sayang, bergesekan dengan furnitur, dinding, dan orang-orang favoritnya. Dia mungkin akan bergesekan dengan bagian belakang tubuhnya dan sering kali mencoba menempatkan posisi kawin dengan bagian belakangnya dan ekor terangkat. Bagian yang paling bermasalah dari panas bagi pemiliknya adalah vokalisasi dan permintaan. Kucing yang sedang berahi akan melolong keras dan terus-menerus serta mencoba menarik perhatian kucing jantan dengan segala cara. Ini dapat menjadi sangat mengganggu, terutama di malam hari. Cara terbaik untuk mengatasi situasi ini adalah dengan memberikan perhatian ekstra kepada kucing Anda dan mengalihkan perhatiannya dengan mainan atau aktivitas lain.',
-    ),
-  );
-
+  // List<Artikel> artikelList = List.generate(
+  //   20,
+  //   (index) => Artikel(
+  //     imageUrl: 'https://i.pinimg.com/736x/22/d1/9d/22d19d00a4868397cbc09f6e3f763bfd.jpg',
+  //     title: 'Kucing Anda Sedang Berahi:',
+  //     author: 'Yang Perlu Anda Ketahui',
+  //     description: 'Jika kucing Anda sedang kepanasan, Anda pasti akan melupakan lolongannya dan permintaan perhatian yang terus-menerus. Jika kucing Anda tidak bisa kawin, panasnya akan menjadi sesuatu yang membuat Anda berdua frustasi dan tidak nyaman. Jika kucing Anda bisa kawin, Anda harus bersiap menghadapi kemungkinan melahirkan dua anak kucing dalam setahun Kecuali jika Anda berencana untuk beternak, perawatan kucing terbaik adalah menadulkannya. Ini akan lebih mudah bagi Anda dan juga lebih mudah bagi Anda. Saat kucing Anda sedang "berahi", ia berada dalam masa subur dalam siklus reproduksinya dan sedang mencari pasangan. Seekor kucing biasanya akan mengalami berahi pada musim semi dan musim gugur dan panas ini dapat berlangsung dari beberapa hari hingga beberapa minggu. Seekor kucing biasanya mengalami panas pertama pada usia sekitar 6 bulan, tetapi ada juga yang mengalami panas pertama pada usia 4 bulan. Saat cuaca panas, kucing Anda mungkin lebih penuh kasih sayang, bergesekan dengan furnitur, dinding, dan orang-orang favoritnya. Dia mungkin akan bergesekan dengan bagian belakang tubuhnya dan sering kali mencoba menempatkan posisi kawin dengan bagian belakangnya dan ekor terangkat. Bagian yang paling bermasalah dari panas bagi pemiliknya adalah vokalisasi dan permintaan. Kucing yang sedang berahi akan melolong keras dan terus-menerus serta mencoba menarik perhatian kucing jantan dengan segala cara. Ini dapat menjadi sangat mengganggu, terutama di malam hari. Cara terbaik untuk mengatasi situasi ini adalah dengan memberikan perhatian ekstra kepada kucing Anda dan mengalihkan perhatiannya dengan mainan atau aktivitas lain.',
+  //     category: 'Healty',
+  //   ),
+  // );
+  final ArticleService articleService = ArticleService();
+  List<Artikel> artikelList = [];
   List<Artikel> filteredArtikelList = [];
   List<bool> isFavorite = List.generate(20, (index) => false);
   String searchQuery = '';
@@ -39,6 +35,15 @@ class _ArtikelPageState extends State<ArtikelPage> {
   void initState() {
     super.initState();
     filteredArtikelList = artikelList;
+    fetchArtikel();
+  }
+
+  Future<void> fetchArtikel() async {
+    final articles = await articleService.getArticles();
+    setState(() {
+      artikelList = articles;
+      filteredArtikelList = artikelList;
+    });
   }
 
   void updateSearchQuery(String query) {
@@ -47,7 +52,7 @@ class _ArtikelPageState extends State<ArtikelPage> {
       filteredArtikelList = artikelList
           .where((artikel) =>
               artikel.title.toLowerCase().contains(query.toLowerCase()) ||
-              artikel.subtitle.toLowerCase().contains(query.toLowerCase()) ||
+              artikel.author.toLowerCase().contains(query.toLowerCase()) ||
               artikel.description.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -76,7 +81,10 @@ class _ArtikelPageState extends State<ArtikelPage> {
           Padding(
             padding: EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
+              backgroundImage: Image.network(
+                widget.user.photo??'https://source.unsplash.com/random/?person',
+              ).image,
+            
             ),
           )
         ],
@@ -177,29 +185,6 @@ class TabBarWidget extends StatelessWidget {
   }
 }
 
-class Artikel {
-  final String imageUrl;
-  final String title;
-  final String subtitle;
-  final String description;
-
-  Artikel({
-    required this.imageUrl,
-    required this.title,
-    required this.subtitle,
-    required this.description,
-  });
-
-  factory Artikel.fromJson(Map<String, dynamic> json) {
-    return Artikel(
-      imageUrl: json['imageUrl'],
-      title: json['title'],
-      subtitle: json['subtitle'],
-      description: json['description'],
-    );
-  }
-}
-
 class ArtikelCard extends StatelessWidget {
   final Artikel artikel;
   final bool isFavorite;
@@ -223,8 +208,15 @@ class ArtikelCard extends StatelessWidget {
                 padding: EdgeInsets.all(8.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10), // BorderRadius pada gambar
-                  child: Image.network(
-                    artikel.imageUrl,
+                  child: artikel.imageUrl != null || artikel.imageUrl != ''
+                   ? Image.network(
+                    artikel.imageUrl??'https://source.unsplash.com/random/?pet',
+                    width: 187, 
+                    height: 236, 
+                    fit: BoxFit.cover,
+                  )
+                  : Image.network(
+                    'https://source.unsplash.com/random/?pet',
                     width: 187, 
                     height: 236, 
                     fit: BoxFit.cover,
@@ -241,7 +233,7 @@ class ArtikelCard extends StatelessWidget {
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      artikel.subtitle,
+                      artikel.author,
                       style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(height: 4),

@@ -198,7 +198,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -206,14 +205,15 @@ import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
 import 'package:owpet/src/screens/Login/login_screen.dart';
 import 'package:owpet/src/screens/Login/register_screen.dart';
+import 'package:owpet/src/screens/Onboarding/onboarding_screen.dart';
 import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
 import 'package:owpet/src/screens/Home/home_screen.dart';
-import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
+// import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:owpet/src/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'settings/settings_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -222,23 +222,32 @@ class MyApp extends StatelessWidget {
   });
 
   final SettingsController settingsController;
-  
+
   @override
   Widget build(BuildContext context) {
-    final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-
-    return ListenableProvider<SettingsController>(
+    return ChangeNotifierProvider<SettingsController>(
       create: (_) => settingsController,
       child: Consumer<SettingsController>(
         builder: (context, settingsController, child) {
           return MaterialApp(
-            home: AuthWrapper(),
+            home: const AuthWrapper(),
             routes: {
-              '/home': (context) => AuthWrapper(),
+              '/home': (context) => const AuthWrapper(),
               '/add_pet': (context) => AddPetScreen(userId: ''),
-              '/forum': (context) => ForumScreen(),
+              '/forum': (context) => ForumScreen(
+                    user: User(
+                      id: '1',
+                      email: 'asa',
+                      name: 'User 1',
+                      password: 'password',
+                      telephone: '08123456789',
+                      description: 'Description',
+                      photo: 'https://source.unsplash.com/random/?person',
+                    ),
+                  ),
               '/register': (context) => RegisterScreen(),
               '/login': (context) => LoginScreen(),
+              '/onboarding': (context) => const OnboardingScreen(),
             },
             restorationScopeId: 'app',
             localizationsDelegates: const [
@@ -250,7 +259,8 @@ class MyApp extends StatelessWidget {
             supportedLocales: const [
               Locale('en', ''), // English, no country code
             ],
-            onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
+            onGenerateTitle: (BuildContext context) =>
+                AppLocalizations.of(context)!.appTitle,
             theme: ThemeData.light(),
             themeMode: ThemeMode.light,
           );
@@ -261,25 +271,46 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<auth.User?>();
 
-    if (firebaseUser != null) {
-      return FutureBuilder<User?>(
-        future: context.read<AuthService>().getCurrentUser(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasData) {
-            return MyHomeScreen(user: snapshot.data!);
+    return FutureBuilder<bool>(
+      future: _checkOnboarding(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.data == false) {
+            return const OnboardingScreen();
           } else {
-            return LoginScreen();         
+            if (firebaseUser != null) {
+              return FutureBuilder<User?>(
+                future: context.read<AuthService>().getCurrentUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasData) {
+                    return MyHomeScreen(user: snapshot.data!);
+                  } else {
+                    return LoginScreen();
+                  }
+                },
+              );
+            } else {
+              return LoginScreen();
+            }
           }
-        },
-      );
-    }
-    return LoginScreen();    
+        }
+      },
+    );
+  }
+
+  Future<bool> _checkOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboardingCompleted') ?? false;
   }
 }

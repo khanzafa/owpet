@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/screens/Onboarding/size_config.dart';
 import 'package:owpet/src/screens/Onboarding/onboarding_contents.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -82,17 +84,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
                                 child: FittedBox(
                                   child: Text(
                                     contents[i].title,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: "Jua",
+                                    style: GoogleFonts.jua(
                                       fontWeight: FontWeight.w600,
                                       fontSize: (width <= 550) ? 30 : 35,
                                       color: Colors.white,
+                                      textStyle: const TextStyle(
+                                        shadows: <Shadow>[
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color: Color.fromARGB(255, 0, 0, 0),
+                                          ),
+                                        ],
+                                      )
                                     ),
                                   ),
                                 ),
@@ -101,8 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             const SizedBox(height: 15),
                             Text(
                               contents[i].desc,
-                              style: TextStyle(
-                                fontFamily: "Jua",
+                              style: GoogleFonts.jua(
                                 fontWeight: FontWeight.w300,
                                 fontSize: (width <= 550) ? 17 : 25,
                                 color: Colors.white,
@@ -131,7 +140,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ? Padding(
                               padding: const EdgeInsets.all(30),
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setBool(
+                                      'onboardingCompleted', true);
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFFFC9340),
                                   shape: RoundedRectangleBorder(
@@ -141,18 +157,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ? const EdgeInsets.symmetric(
                                           horizontal: 100, vertical: 20)
                                       : EdgeInsets.symmetric(
-                                          horizontal: width * 0.2, vertical: 25),
+                                          horizontal: width * 0.2,
+                                          vertical: 25),
                                   textStyle: TextStyle(
                                       fontSize: (width <= 550) ? 13 : 17),
                                 ),
-                                child: const Text(
-                                  "START",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Jua",
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                child: Text("START",
+                                    style: GoogleFonts.jua(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    )),
                               ),
                             )
                           : Padding(
@@ -171,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     ),
                                     style: TextButton.styleFrom(
                                       elevation: 0,
-                                      textStyle: TextStyle(
+                                      textStyle: GoogleFonts.jua(
                                         fontWeight: FontWeight.w600,
                                         fontSize: (width <= 550) ? 13 : 17,
                                       ),
@@ -199,11 +213,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       textStyle: TextStyle(
                                           fontSize: (width <= 550) ? 13 : 17),
                                     ),
-                                    child: const Text(
+                                    child: Text(
                                       "NEXT",
-                                      style: TextStyle(
+                                      style: GoogleFonts.jua(
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: "Jua",
                                         color: Colors.white,
                                       ),
                                     ),

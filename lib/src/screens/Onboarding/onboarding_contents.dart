@@ -14,12 +14,12 @@ List<OnboardingContents> contents = [
   OnboardingContents(
     title: "Monitoring Hewan",
     image: "assets/images/onboarding1.png",
-    desc: "Memantau dan melacak kondisi serta aktivitas hewan secara real-time.",
+    desc: "Fitur ini  memungkinkan pengguna untuk melacak dan memantau kondisi serta aktivitas hewan secara real-time.",
   ),
   OnboardingContents(
     title: "Perawatan Kesehatan",
     image: "assets/images/onboarding2.png",
-    desc: "Membantu pemilik hewan untukmerawat dan memantau kesehatan hewan peliharaan mereka.",
+    desc: "Membantu pemilik hewan untuk merawat dan memantau kesehatan hewan peliharaan mereka.",
   ),
   OnboardingContents(
     title: "Komunitas Hewan",

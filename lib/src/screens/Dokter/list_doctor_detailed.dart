@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:owpet/src/models/doctor.dart';
 
 class DoctorDetailPage extends StatelessWidget {
-  final String name;
-  final String specialty;
-  final String address;
-  final String practiceHours;
+  final Dokter doctor;
 
   DoctorDetailPage({
-    required this.name,
-    required this.specialty,
-    required this.address,
-    required this.practiceHours,
+    required this.doctor,
   });
 
   @override
@@ -51,14 +46,16 @@ class DoctorDetailPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                      image: AssetImage('assets/images/doctor.jpg'), // Ensure you have an image asset
+                      image: Image.network(
+                        doctor.imageUrl??'https://source.unsplash.com/random/?doctor',
+                      ).image,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 SizedBox(height: 22),
                 Text(
-                  name,
+                  doctor.name,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -67,7 +64,7 @@ class DoctorDetailPage extends StatelessWidget {
                 SizedBox(height: 25),
                 InfoRow(
                   label: 'Alamat\nPraktek',
-                  value: address,
+                  value: doctor.location,
                   labelStyle: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
@@ -79,7 +76,7 @@ class DoctorDetailPage extends StatelessWidget {
                 ),
                 InfoRow(
                   label: 'Spesialis',
-                  value: specialty,
+                  value: doctor.speciality,
                   labelStyle: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
@@ -91,7 +88,7 @@ class DoctorDetailPage extends StatelessWidget {
                 ),
                 InfoRow(
                   label: 'Jam Praktek',
-                  value: practiceHours,
+                  value: doctor.timeOpen,
                   labelStyle: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
