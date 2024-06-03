@@ -8,7 +8,7 @@
 // import 'package:owpet/src/services/pet_service.dart';
 // import 'package:owpet/src/models/pet.dart';
 
-// class MealChoicePetScreen extends StatelessWidget {
+// class HealthChoicePetScreen extends StatelessWidget {
 //   final String userId;
 //   final PetService petService = PetService();
 //   final List<String> categories = [
@@ -19,7 +19,7 @@
 //     'Burung'
 //   ];
 
-//   MealChoicePetScreen({required this.userId});
+//   HealthChoicePetScreen({required this.userId});
 
 //   void _navigateToAddPetScreen(BuildContext context) async {
 //     Navigator.push(
@@ -272,21 +272,22 @@ import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 import 'package:owpet/src/screens/add_profile.dart';
 import 'package:owpet/src/screens/Pets/add_pet_screen.dart';
 import 'package:owpet/src/screens/Pets/detail_pet_screen.dart';
+import 'package:owpet/src/screens/kesehatan/health_monitoring_screen.dart';
 import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
 import 'package:owpet/src/services/pet_service.dart';
 import 'package:owpet/src/models/pet.dart';
 import 'package:provider/provider.dart';
 
-class MealChoicePetScreen extends StatefulWidget {
+class HealthChoicePetScreen extends StatefulWidget {
   final User user;
 
-  MealChoicePetScreen({required this.user});
+  HealthChoicePetScreen({required this.user});
 
   @override
-  _MealChoicePetScreenState createState() => _MealChoicePetScreenState();
+  _HealthChoicePetScreenState createState() => _HealthChoicePetScreenState();
 }
 
-class _MealChoicePetScreenState extends State<MealChoicePetScreen> {
+class _HealthChoicePetScreenState extends State<HealthChoicePetScreen> {
   final List<String> categories = ['All', 'Anjing', 'Kucing', 'Kelinci', 'Burung'];
   TextEditingController _searchController = TextEditingController();
 
@@ -396,7 +397,7 @@ class _MealChoicePetScreenState extends State<MealChoicePetScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MealMonitoringScreen(petId: pet.id!),
+                              builder: (context) => HealthMonitoringScreen(petId: pet.id!),
                             ),
                           );
                         },

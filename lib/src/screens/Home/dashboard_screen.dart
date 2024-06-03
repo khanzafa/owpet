@@ -6,10 +6,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/models/chart.dart';
 import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
+import 'package:owpet/src/screens/kesehatan/health_choice_pet.dart';
+import 'package:owpet/src/screens/perawatan/grooming_choice_pet.dart';
+import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 import 'package:owpet/src/screens/Makan/meal_choice_pet.dart';
 import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
 import 'package:owpet/src/screens/Artikel/list_article_screen.dart';
 import 'package:owpet/src/screens/Dokter/list_doctor.dart';
+import 'package:owpet/src/screens/kesehatan/health_monitoring_screen.dart';
+import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
 import 'package:owpet/src/services/task_service.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -38,15 +43,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<ChartData> chartData = [];
 
   void getChartData() async {
-  final taskCompletionService = TaskCompletionService();
-  final List<ChartData> data = await taskCompletionService
-      .calculateDailyTaskCompletionRate(widget.user.id);
-  if (mounted) {
-    setState(() {
-      chartData = data;
-    });
+    final taskCompletionService = TaskCompletionService();
+    final List<ChartData> data = await taskCompletionService
+        .calculateDailyTaskCompletionRate(widget.user.id);
+    if (mounted) {
+      setState(() {
+        chartData = data;
+      });
+    }
   }
-}
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +65,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -94,7 +100,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         SizedBox(height: 8),
                         SizedBox(
-                          width: 160, // Apply similar width constraints for uniformity
+                          width:
+                              160, // Apply similar width constraints for uniformity
                           child: Text(
                             'Yuk, Pantau Aktivitas Pets Kita',
                             style: GoogleFonts.jua(
@@ -158,7 +165,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         LineSeries<ChartData, DateTime>(
                           dataSource: dummyChartData,
                           xValueMapper: (ChartData data, _) => data.date,
-                          yValueMapper: (ChartData data, _) => data.completionRate,
+                          yValueMapper: (ChartData data, _) =>
+                              data.completionRate,
                         ),
                       ],
                     ),
@@ -171,6 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
   Widget _buildGridItem(String title, BuildContext context) {
     return Card(
       color: Color.fromRGBO(139, 128, 255, 1),
@@ -181,10 +190,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: InkWell(
         onTap: () {
           if (title == 'Perawatan') {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => MyPetsScreen()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      GroomingChoicePetScreen(user: widget.user)),
+            );
           } else if (title == 'Makan') {
             Navigator.push(
               context,
@@ -192,10 +203,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   builder: (context) => MealChoicePetScreen(user: widget.user)),
             );
           } else if (title == 'Kesehatan') {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      HealthChoicePetScreen(user: widget.user)),
+            );
           } else if (title == 'Artikel') {
             Navigator.push(
               context,
