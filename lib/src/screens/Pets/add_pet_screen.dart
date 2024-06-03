@@ -58,27 +58,28 @@ class _AddPetScreenState extends State<AddPetScreen> {
       }
     });
   }
-
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-            icon: Image.asset(
-              'assets/images/icon-park-solid_back.png',
-              height: 24, // Set height according to your needs
-              width: 24, // Set width according to your needs
-            ),
-            onPressed: () => Navigator.pop(context),
+          icon: Image.asset(
+            'assets/images/icon-park-solid_back.png',
+            height: 24, // Set height according to your needs
+            width: 24, // Set width according to your needs
           ),
-          title: Text(
-            'Tambahkan Hewan Baru',
-            style: GoogleFonts.jua(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Tambahkan Hewan Baru',
+          style: GoogleFonts.jua(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
+        ),
       ),
       body:
           Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -368,5 +369,4 @@ class _AddPetScreenState extends State<AddPetScreen> {
       ]),
     );
   }
-
 }
