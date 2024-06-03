@@ -15,7 +15,6 @@ class AddPetScreen extends StatefulWidget {
 }
 
 class _AddPetScreenState extends State<AddPetScreen> {
-  late String userId = '';
   final PetService petService = PetService();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -357,7 +356,7 @@ class _AddPetScreenState extends State<AddPetScreen> {
                 photoUrl: _image != null ? _image!.path : '',
               );
 
-              await petService.addPet(userId, pet);
+              await petService.addPet(widget.userId, pet);
               Navigator.pop(context);
             },
             child: Text(

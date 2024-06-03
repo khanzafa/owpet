@@ -113,6 +113,22 @@ class MealService {
         .map((snapshot) => snapshot.docs);
   }
 
+  // Get Meal Progress
+  Stream<DocumentSnapshot> getProgressStatus (String petId, String date) {
+    try {
+      final progressDoc = _firestore
+          .collection('meal_progress')
+          .doc(petId)
+          .collection('daily_progress')
+          .doc(date)
+          .get();
+      return progressDoc.asStream();
+    } catch (e) {
+      print('Error getting meal progress: $e');
+      throw e;
+    }
+  }
+
   Future<void> updateMealProgress(
       String petId, String date, String scheduleId, bool status) async {
     try {
@@ -223,6 +239,11 @@ class MealService {
       print('Error auto adding meal progress: $e');
       throw e;
     }
+  }
+
+  double calculateCompletionRate(List<bool> taskProgress) {
+    int completedTasks = taskProgress.where((task) => task).length;
+    return (completedTasks / taskProgress.length) * 100;
   }
 }
 
