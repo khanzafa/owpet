@@ -5,10 +5,15 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:owpet/src/models/user.dart';
 import 'package:owpet/src/screens/Komunitas/forum_screen.dart';
+import 'package:owpet/src/screens/kesehatan/health_choice_pet.dart';
+import 'package:owpet/src/screens/perawatan/grooming_choice_pet.dart';
+import 'package:owpet/src/screens/Makan/meal_monitoring_screen.dart';
 import 'package:owpet/src/screens/Makan/meal_choice_pet.dart';
 import 'package:owpet/src/screens/Pets/my_pets_screen.dart';
 import 'package:owpet/src/screens/Artikel/list_article_screen.dart';
 import 'package:owpet/src/screens/Dokter/list_doctor.dart';
+import 'package:owpet/src/screens/kesehatan/health_monitoring_screen.dart';
+import 'package:owpet/src/screens/perawatan/grooming_monitoring_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   final User user;
@@ -133,20 +138,20 @@ class DashboardScreen extends StatelessWidget {
     child: InkWell(
       onTap: () {
         if (title == 'Perawatan') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => MyPetsScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GroomingChoicePetScreen(user: user)),
+          );
         } else if (title == 'Makan') {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MealChoicePetScreen(user: user)),
           );
         } else if (title == 'Kesehatan') {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ProfileUserScreen()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HealthChoicePetScreen(user: user)),
+          );
         } else if (title == 'Artikel') {
           Navigator.push(
             context,

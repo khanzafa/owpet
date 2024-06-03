@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MonitoringItem extends StatelessWidget {
   final String title;
@@ -20,14 +21,14 @@ class MonitoringItem extends StatelessWidget {
         children: [
           Text(
             '${index + 1}. ',
-            style: const TextStyle(
+            style: GoogleFonts.jua(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             title,
-            style: const TextStyle(
+            style: GoogleFonts.jua(
               fontSize: 18,
             ),
           ),

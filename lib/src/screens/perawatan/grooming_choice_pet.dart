@@ -8,7 +8,7 @@
 // import 'package:owpet/src/services/pet_service.dart';
 // import 'package:owpet/src/models/pet.dart';
 
-// class MealChoicePetScreen extends StatelessWidget {
+// class GroomingChoicePetScreen extends StatelessWidget {
 //   final String userId;
 //   final PetService petService = PetService();
 //   final List<String> categories = [
@@ -19,7 +19,7 @@
 //     'Burung'
 //   ];
 
-//   MealChoicePetScreen({required this.userId});
+//   GroomingChoicePetScreen({required this.userId});
 
 //   void _navigateToAddPetScreen(BuildContext context) async {
 //     Navigator.push(
@@ -277,16 +277,16 @@ import 'package:owpet/src/services/pet_service.dart';
 import 'package:owpet/src/models/pet.dart';
 import 'package:provider/provider.dart';
 
-class MealChoicePetScreen extends StatefulWidget {
+class GroomingChoicePetScreen extends StatefulWidget {
   final User user;
 
-  MealChoicePetScreen({required this.user});
+  GroomingChoicePetScreen({required this.user});
 
   @override
-  _MealChoicePetScreenState createState() => _MealChoicePetScreenState();
+  _GroomingChoicePetScreenState createState() => _GroomingChoicePetScreenState();
 }
 
-class _MealChoicePetScreenState extends State<MealChoicePetScreen> {
+class _GroomingChoicePetScreenState extends State<GroomingChoicePetScreen> {
   final List<String> categories = ['All', 'Anjing', 'Kucing', 'Kelinci', 'Burung'];
   TextEditingController _searchController = TextEditingController();
 
@@ -396,7 +396,7 @@ class _MealChoicePetScreenState extends State<MealChoicePetScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MealMonitoringScreen(petId: pet.id!),
+                              builder: (context) => GroomingMonitoringScreen(petId: pet.id!),
                             ),
                           );
                         },
